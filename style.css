@@ -1,0 +1,94 @@
+* {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
+html {
+    margin: 0;
+}
+
+h1 {
+    color:white;
+}
+
+div.pausemenu h2 {
+    color: white;
+}
+
+body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.gamebox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div.canvasflexbox {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    background: black;
+}
+
+div.canvasflexbox canvas {
+    z-index: 1;
+}
+
+div.pausemenu {
+    position: absolute;
+    width: 600px;
+    height: 400px;
+    left: 100px;
+    top: 100px;
+    background-color: rgb(41, 41, 41);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 5px;
+    border: 3px solid white;
+}
+
+.pausebutton {
+    color: white;
+    background-color: rgb(70, 70, 70);
+    border: 3px solid white;
+    border-radius: 5px;
+    font-size: 170%;
+    padding: 10px;
+}
+
+.gamepaused {
+    color: white;
+}
+
+.pausebutton:hover {
+    background-color: black;
+}
+
+.visible {
+    z-index: 99;
+}
+
+.statlist {
+    position: absolute;
+    list-style: none;
+    left: 100px;
+    top: 100px;
+}
+
+div.sources {
+    font-size: 0.5em;
+}

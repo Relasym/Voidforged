@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h2>Fish eaten: <span class="fishcounter" id="fishcounter">0</span></h2>
+    <div class="gamebox">
+        <ul class="statlist">
+            <li class="stat1"><span class=type id=type1></span><span class=value id=value1></span></li>
+            <li class="stat2"><span class=type id=type2></span><span class=value id=value2></span></li>
+            <li class="stat3"><span class=type id=type3></span><span class=value id=value3></span></li>
+            <li class="stat4"><span class=type id=type4></span><span class=value id=value4></span></li>
+            <li class="stat5"><span class=type id=type5></span><span class=value id=value5></span></li>
+            <li class="stat6"><span class=type id=type6></span><span class=value id=value6></span></li>
+            <li class="stat7"><span class=type id=type7></span><span class=value id=value7></span></li>
+            <li class="stat8"><span class=type id=type8></span><span class=value id=value8></span></li>
+            <li class="stat9"><span class=type id=type9></span><span class=value id=value9></span></li>
+            <li class="stat10"><span class=type id=type10></span><span class=value id=value10></span></li>
+        </ul>
+
+        <div class="canvasflexbox">
+            <div class="pausemenu">
+                <h1 id="menuline1">Penguins!</h1>
+                <h2 id="menuline2">use WASD to hunt tasty fish!</h3>
+                    <!-- <h3 class="gamepaused">Game Paused</h3> -->
+                    <button class="pausebutton">Start</button>
+
+            </div>
+            <canvas width="800" height="600">
+            </canvas>
+        </div>
+    </div>
+
+
+    <div class="sources">
+        <h3>Image Sources:</h3>
+        <a href="https://www.freeiconspng.com/img/19539">Penguin Png Image Best Collections</a>
+        <br>
+        <a href="https://www.freeiconspng.com/img/26344">Picture Fish Download</a>
+        <br>
+        <a href="https://www.freeiconspng.com/img/42733">Png Shark Transparent Background Hd</a>
+    </div>
+
+    <script src="engine\gameObjects.js"></script>
+    <script src="engine\level.js"></script>
+    <script src="engine\collisions.js"></script>
+    <script src="notroid\notroidLevel.js"></script>
+    <script src="notroid\notroidObjects.js"></script>
+    <script src="notroid\notroidMain.js"></script>
+    <script src="engine\main.js"></script>
+
+</body>
+
+</html>

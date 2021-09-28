@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "ES2015",
+        "noImplicitAny": true
+    },
+    "files": [
+        "engine/main.ts",
+        "engine/gameObjects.ts",
+        "engine/level.ts",
+        "engine/collisions.ts",
+        "voidforged/voidforgedMain.ts",
+        "voidforged/voidforgedObjects.ts",
+        "voidforged/voidforgedLevels.ts"
+    ]
+}
