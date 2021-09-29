@@ -23,15 +23,15 @@ function start() {
     document.getElementById("type1").textContent = "allObjects: ";
     document.getElementById("type2").textContent = "drawableObjects: ";
     document.getElementById("type3").textContent = "updateableObjects: ";
-    document.getElementById("type4").textContent = "Fish: ";
-    document.getElementById("type5").textContent = "Sharks: ";
+    document.getElementById("type4").textContent = "";
+    document.getElementById("type5").textContent = "";
     document.getElementById("type6").textContent = "collisionChecks: ";
     document.getElementById("type7").textContent = "";
     document.getElementById("type8").textContent = "Player Speed: ";
-    document.getElementById("type9").textContent = "Fish eaten: ";
+    document.getElementById("type9").textContent = "";
     document.getElementById("type10").textContent = "Frametime: ";
     currentLevel = 0;
-    levels[0] = new NotroidTestLevel(context);
+    levels[0] = new VoidforgedTestLevel(context);
     //unpause and start Game
     togglePause();
     pauseButton.textContent = "Start";
@@ -40,20 +40,18 @@ function start() {
 }
 function logicLoop() {
     setTimeout(logicLoop, 0);
-    //only process logic if not paused and enough time has paused
+    //only process logic if not paused and enough time has passed
     if (!isPaused) {
         currentFrameDuration = performance.now() - lastFrameTime;
-        if (currentFrameDuration > simulationTPF - 10) {
-            collisionChecks = 0;
-            levels[currentLevel].update(currentFrameDuration);
-            lastFrameTime = performance.now();
-            currentFrame++;
-            if (simulationFPSArray.length == 60) {
-                simulationFPSArray.shift();
-            }
-            simulationFPSArray.push(currentFrameDuration);
-            simulationFPSAverage = simulationFPSArray.reduce((a, b) => a + b) / 60;
+        collisionChecks = 0;
+        levels[currentLevel].update(currentFrameDuration);
+        if (simulationFPSArray.length == 60) {
+            simulationFPSArray.shift();
         }
+        simulationFPSArray.push(currentFrameDuration);
+        simulationFPSAverage = simulationFPSArray.reduce((a, b) => a + b) / 60;
+        currentFrame++;
+        lastFrameTime = performance.now();
     }
 }
 function drawLoop() {
@@ -74,14 +72,8 @@ function drawLoop() {
         if (levels[currentLevel].player != null) {
             document.getElementById("value8").textContent = Math.round(vectorLength(levels[currentLevel].player.velocity)).toString();
         }
-        if (levels[currentLevel].constructor.name == "PenguinLevel") {
-            document.getElementById("value9").textContent = levels[currentLevel].fishCounter.toString();
-        }
         // document.getElementById("value10").textContent = performance.now() - lastFrameTime + "ms";
         document.getElementById("value10").textContent = Math.round(simulationFPSAverage).toString();
-        if (levels[currentLevel].constructor.name == "PenguinLevel") {
-            document.getElementById("fishcounter").textContent = levels[currentLevel].fishCounter.toString();
-        }
     }
 }
 function vectorLength(vector) {
@@ -107,7 +99,7 @@ document.addEventListener('keydown', (keypress) => {
         activateOrCreateLevel(3);
     }
     if (keypress.key == "r" && isPaused == false) {
-        levels[currentLevel] = new NotroidTestLevel(context);
+        levels[currentLevel] = new VoidforgedTestLevel(context);
     }
 });
 document.addEventListener('keyup', (keypress) => {
@@ -129,13 +121,13 @@ pauseButton.addEventListener("click", function () {
 function activateOrCreateLevel(number) {
     if (levels[number] == null) {
         if (number == 1) {
-            levels[number] = new NotroidTestLevel(context);
+            levels[number] = new VoidforgedTestLevel(context);
         }
         if (number == 2) {
-            levels[number] = new NotroidTestLevel(context);
+            levels[number] = new VoidforgedTestLevel(context);
         }
         if (number == 3) {
-            levels[number] = new NotroidTestLevel(context);
+            levels[number] = new VoidforgedTestLevel(context);
         }
     }
     currentLevel = number;
@@ -147,7 +139,7 @@ function togglePause() {
     pauseButton.textContent = "Continue";
     if (levels[currentLevel].objectsByFaction[1].size == 0) {
         console.info("Restarting");
-        levels[currentLevel] = new NotroidTestLevel(context);
+        levels[currentLevel] = new VoidforgedTestLevel(context);
         start();
         togglePause();
         pauseButton.textContent = "Restart";

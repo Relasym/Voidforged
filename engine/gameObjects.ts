@@ -29,9 +29,9 @@ interface GameObjectInterface {
     velocity: { x: any, y: any };
     isDestroying: boolean;
     type: collisionType;
-    draw():void;
-    updateBeforeCollision(currentFrameDuration:number):void;
-    updateAfterCollision(currentFrameDuration:number):void;
+    draw(): void;
+    updateBeforeCollision(currentFrameDuration: number): void;
+    updateAfterCollision(currentFrameDuration: number): void;
 }
 
 //basic object, includes register/deregister and destruction
@@ -48,13 +48,14 @@ class GameObject implements GameObjectInterface {
     //position, shape and velocity
     shape: shape;
     velocity = { x: 0, y: 0 };
-    
+    maxspeed = 1000;
+
     //toggles
     hasCollision = true;
     isDrawable = true;
     isUpdateable = true;
     affectedByGravity = false;
-    
+
     //object destruction
     isDestroying = false;
     destructionTime = 300; //ms
@@ -72,7 +73,16 @@ class GameObject implements GameObjectInterface {
 
     //draw color, only used if no image is set
     color: color;
-    
+
+    //set by collision every cycle, check if somebody is on the ground;
+    isContactingTerrain =
+        {
+            top: false,
+            left: false,
+            down: false,
+            right: false,
+        }
+
     constructor(owner: Level, shape: shape, type: collisionType, color: color) {
         this.owner = owner;
         this.shape = shape;
@@ -80,9 +90,9 @@ class GameObject implements GameObjectInterface {
         this.color = color;
         this.image = new Image();
         //maximum radius for simple collision checking
-        if(this.shape.radius==undefined) {
-            if(this.type==collisionType.Rectangle) {
-                this.shape.radius=vectorLength({x:this.shape.width, y:this.shape.height});
+        if (this.shape.radius == undefined) {
+            if (this.type == collisionType.Rectangle) {
+                this.shape.radius = vectorLength({ x: this.shape.width, y: this.shape.height });
             }
         }
     }
@@ -105,7 +115,7 @@ class GameObject implements GameObjectInterface {
         this.isDestroying = true;
         this.owner.objectsByFaction[this.faction].delete(this);
     }
-    
+
     updateBeforeCollision(currentFrameDuration: number): void {
         if (this.isDestroying) {
             this.destructionProgress -= currentFrameDuration / this.destructionTime;
@@ -116,9 +126,15 @@ class GameObject implements GameObjectInterface {
         if (this.affectedByGravity) {
             this.velocity.y += this.owner.gravity * currentFrameDuration / 1000;
         }
+        this.resetTerrainContact();
     }
     updateAfterCollision(currentFrameDuration: number): void {
         if (!this.isDestroying || this.movesWhileDestroying) {
+            if (vectorLength(this.velocity) > this.maxspeed) {
+                this.velocity = normalizeVector(this.velocity);
+                this.velocity.x *= this.maxspeed;
+                this.velocity.y *= this.maxspeed;
+            }
             this.shape.x += this.velocity.x * currentFrameDuration / 1000;
             this.shape.y += this.velocity.y * currentFrameDuration / 1000;
         }
@@ -155,7 +171,7 @@ class GameObject implements GameObjectInterface {
             if (this.canRotate) {
                 context.rotate(this.rotation);
             }
-            if(this.image.src!="" && this.imageDirection==undefined && this.canRotate==false) {
+            if (this.image.src != "" && this.imageDirection == undefined && this.canRotate == false) {
                 console.warn("Image Direction undefined in unrotateable Object:");
                 console.warn(this);
             }
@@ -168,15 +184,21 @@ class GameObject implements GameObjectInterface {
             if (this.image.src == "") {
                 context.fillRect(this.shape.x - this.owner.camera.x, this.shape.y - this.owner.camera.y, this.shape.width, this.shape.height);
             } else {
-                if(this.imageShape==null) {
+                if (this.imageShape == null) {
                     this.owner.context.drawImage(this.image, this.shape.x - this.owner.camera.x, this.shape.y - this.owner.camera.y, this.shape.width, this.shape.height);
                 } else {
-                    this.owner.context.drawImage(this.image, this.imageShape.x,this.imageShape.y,this.imageShape.width,this.imageShape.height,this.shape.x - this.owner.camera.x, this.shape.y - this.owner.camera.y, this.shape.width, this.shape.height);
+                    this.owner.context.drawImage(this.image, this.imageShape.x, this.imageShape.y, this.imageShape.width, this.imageShape.height, this.shape.x - this.owner.camera.x, this.shape.y - this.owner.camera.y, this.shape.width, this.shape.height);
                 }
             }
             this.owner.context.restore();
         }
 
+    }
+    resetTerrainContact(){
+        this.isContactingTerrain.top=false;
+        this.isContactingTerrain.left=false;
+        this.isContactingTerrain.down=false;
+        this.isContactingTerrain.right=false;
     }
 }
 
@@ -215,6 +237,6 @@ class Projectile extends GameObject {
     }
 }
 
-interface PlayerInterface extends GameObjectInterface{
+interface PlayerInterface extends GameObjectInterface {
 
 }

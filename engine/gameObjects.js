@@ -12,6 +12,7 @@ var imageDirection;
 class GameObject {
     constructor(owner, shape, type, color) {
         this.velocity = { x: 0, y: 0 };
+        this.maxspeed = 1000;
         //toggles
         this.hasCollision = true;
         this.isDrawable = true;
@@ -25,6 +26,13 @@ class GameObject {
         //current angle && rotation toggle
         this.rotation = 0;
         this.canRotate = false;
+        //set by collision every cycle, check if somebody is on the ground;
+        this.isContactingTerrain = {
+            top: false,
+            left: false,
+            down: false,
+            right: false,
+        };
         this.owner = owner;
         this.shape = shape;
         this.type = type;
@@ -71,9 +79,15 @@ class GameObject {
         if (this.affectedByGravity) {
             this.velocity.y += this.owner.gravity * currentFrameDuration / 1000;
         }
+        this.resetTerrainContact();
     }
     updateAfterCollision(currentFrameDuration) {
         if (!this.isDestroying || this.movesWhileDestroying) {
+            if (vectorLength(this.velocity) > this.maxspeed) {
+                this.velocity = normalizeVector(this.velocity);
+                this.velocity.x *= this.maxspeed;
+                this.velocity.y *= this.maxspeed;
+            }
             this.shape.x += this.velocity.x * currentFrameDuration / 1000;
             this.shape.y += this.velocity.y * currentFrameDuration / 1000;
         }
@@ -132,6 +146,12 @@ class GameObject {
             }
             this.owner.context.restore();
         }
+    }
+    resetTerrainContact() {
+        this.isContactingTerrain.top = false;
+        this.isContactingTerrain.left = false;
+        this.isContactingTerrain.down = false;
+        this.isContactingTerrain.right = false;
     }
 }
 //what was this even for???

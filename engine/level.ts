@@ -63,8 +63,6 @@ class Level {
             this.camera.y = this.player.shape.y - 300 + this.player.shape.height / 2;
         }
 
-        this.handleCollisions(this.objectsByFaction, this.projectilesByFaction);
-
     }
 
     start() {
