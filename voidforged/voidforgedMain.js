@@ -1,13 +1,13 @@
 //Background Image
-const backgroundImageSrc = "img/Backgrounds/Background cave2.png";
+const backgroundImageSrc = "img\\Backgrounds\\Background cave2.png";
 const backgroundImage = new Image();
 backgroundImage.src = backgroundImageSrc;
 //Level Blocks
 const wallBlockSrc = new Array();
 wallBlockSrc.push("img\\Tiles\\Cave filler block1.png");
-wallBlockSrc.push("/img/Tiles/Cave filler block2.png");
-wallBlockSrc.push("/img//Tiles//Cave filler block3.png");
-wallBlockSrc.push("/img/Tiles/Cave filler block4.png");
+wallBlockSrc.push("img\\Tiles\\Cave filler block2.png");
+wallBlockSrc.push("img\\Tiles\\Cave filler block3.png");
+wallBlockSrc.push("img\\Tiles\\Cave filler block4.png");
 const wallBlock = new Array();
 for (let i = 0; i < wallBlockSrc.length; i++) {
     wallBlock.push(new Image());
