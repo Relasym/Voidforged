@@ -49,7 +49,7 @@ function logicLoop() {
             simulationFPSArray.shift();
         }
         simulationFPSArray.push(currentFrameDuration);
-        simulationFPSAverage = simulationFPSArray.reduce((a, b) => a + b) / 60;
+        simulationFPSAverage = simulationFPSArray.reduce((a, b) => a + b) / simulationFPSArray.length;
         currentFrame++;
         lastFrameTime = performance.now();
     }

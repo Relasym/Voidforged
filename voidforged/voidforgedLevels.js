@@ -36,23 +36,31 @@ class VoidforgedTestLevel extends Level {
             newObject.register();
         }
         //player
-        let player = new VoidforgedPlayer(this, { x: 100, y: 100, width: 32, height: 32 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
+        let player = new VoidforgedPlayer(this, { x: 100, y: 100, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
         player.register();
         //walls
-        for (let i = 0; i < Math.floor(canvas.width / 32); i++) {
-            this.createWallBlock(32 * i, 0);
-            this.createWallBlock(32 * i, canvas.height - 32);
-            this.createWallBlock(32 * i, canvas.height - 64);
-            if (i < Math.floor(canvas.height / 32)) {
-                this.createWallBlock(0, 32 * i);
-                this.createWallBlock(canvas.width - 32, 32 * i);
+        let blocksize = 64;
+        for (let i = 0; i < Math.floor(canvas.width / blocksize); i++) {
+            this.createWallBlock(blocksize * i, 0);
+            this.createFillerBlock(blocksize * i, canvas.height - blocksize * 1);
+            this.createFillerBlock(blocksize * i, canvas.height - blocksize * 2);
+            this.createWallBlock(blocksize * i, canvas.height - blocksize * 3);
+            if (i < Math.floor(canvas.height / blocksize)) {
+                this.createWallBlock(0, blocksize * i);
+                this.createWallBlock(canvas.width - blocksize, blocksize * i);
             }
         }
     }
     createWallBlock(x, y) {
-        let newBlock = new VoidforgedDisplayObject(this, { x: x, y: y, width: 32, height: 32 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
+        let newBlock = new VoidforgedDisplayObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
         let block = Math.random() * wallBlockNew.length;
         newBlock.image = wallBlockNew[Math.floor(block)];
+        newBlock.faction = 0;
+        newBlock.register();
+    }
+    createFillerBlock(x, y) {
+        let newBlock = new VoidforgedDisplayObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
+        newBlock.image = caveWallBlock;
         newBlock.faction = 0;
         newBlock.register();
     }
