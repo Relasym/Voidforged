@@ -28,7 +28,7 @@ class GameObject {
         this.canRotate = false;
         //set by collision every cycle, check if somebody is on the ground;
         this.isContactingTerrain = {
-            top: false,
+            up: false,
             left: false,
             down: false,
             right: false,
@@ -148,7 +148,7 @@ class GameObject {
         }
     }
     resetTerrainContact() {
-        this.isContactingTerrain.top = false;
+        this.isContactingTerrain.up = false;
         this.isContactingTerrain.left = false;
         this.isContactingTerrain.down = false;
         this.isContactingTerrain.right = false;

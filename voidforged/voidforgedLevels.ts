@@ -158,35 +158,35 @@ class VoidforgedTestLevel extends Level {
                         distances.push(object1.shape.y + object1.shape.height - object2.shape.y);
                         distances.push(object2.shape.y + object2.shape.height - object1.shape.y);
 
-                        let absDist: number[] = new Array();
-                        for (let i = 0; i < distances.length; i++) {
-                            absDist[i] = Math.abs(distances[i]);
+                        for (let i = 0; i<distances.length;i++) {
+                            if(distances[i]<0) {
+                                distances[i]=9999; //TODO fix hack
+                            }
                         }
-                        let minNum = Math.min(...absDist);
-                        let index = absDist.indexOf(minNum);
+                        let index = distances.indexOf(Math.min(...distances));
                         switch (index) {
                             case 0: {
                                 object1.shape.x -= distances[index];
                                 object1.velocity.x = 0;
-                                object1.isContactingTerrain.left=true;
+                                object1.isContactingTerrain.right=true;
                                 break;
                             }
                             case 1: {
                                 object1.shape.x += distances[index];
                                 object1.velocity.x = 0;
-                                object1.isContactingTerrain.right=true;
+                                object1.isContactingTerrain.left=true;
                                 break;
                             }
                             case 2: {
                                 object1.shape.y -= distances[index];
                                 object1.velocity.y = 0;
-                                object1.isContactingTerrain.up=true;
+                                object1.isContactingTerrain.down=true;
                                 break;
                             }
                             case 3: {
                                 object1.shape.y += distances[index];
                                 object1.velocity.y = 0;
-                                object1.isContactingTerrain.down=true;
+                                object1.isContactingTerrain.up=true;
                                 break;
                             }
                         }

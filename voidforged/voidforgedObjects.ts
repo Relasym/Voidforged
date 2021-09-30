@@ -23,6 +23,9 @@ class VoidforgedPlayer extends GameObject {
 
 
     updateAfterCollision(currentFrameDuration:number):void {
+        if(currentInputs.size>0) {
+            console.log(this.isContactingTerrain.up,this.isContactingTerrain.down,this.isContactingTerrain.right,this.isContactingTerrain.left);
+        }
         if(currentInputs.has("a")) {
             this.velocity.x-=this.movementAcceleration*currentFrameDuration/1000;
         }
