@@ -2,9 +2,7 @@ const canvas = document.querySelector("canvas");
 const context = canvas.getContext("2d");
 const startTime = performance.now();
 const currentInputs = new Set();
-const levelAmount = 4;
-const levels = new Array(levelAmount);
-var currentLevel;
+let game;
 const simulationFPS = 60; //frames per second
 const simulationFPSArray = new Array();
 let simulationFPSAverage = 0;
@@ -30,8 +28,7 @@ function start() {
     document.getElementById("type8").textContent = "Player Speed: ";
     document.getElementById("type9").textContent = "";
     document.getElementById("type10").textContent = "Frametime: ";
-    currentLevel = 0;
-    levels[0] = new VoidforgedTestLevel(context);
+    game = new VoidforgedGame();
     //unpause and start Game
     togglePause();
     pauseButton.textContent = "Start";
@@ -44,7 +41,7 @@ function logicLoop() {
     if (!isPaused) {
         currentFrameDuration = performance.now() - lastFrameTime;
         collisionChecks = 0;
-        levels[currentLevel].update(currentFrameDuration);
+        game.update(currentFrameDuration);
         if (simulationFPSArray.length == 60) {
             simulationFPSArray.shift();
         }
@@ -61,17 +58,17 @@ function drawLoop() {
         lastDrawnFrame++;
         //reset frame
         context.clearRect(0, 0, canvas.width, canvas.height);
-        levels[currentLevel].draw();
+        game.draw();
         //update stats
         // document.getElementById("value1").textContent = allObjects.length.toString();
-        document.getElementById("value2").textContent = levels[currentLevel].drawableObjects.size.toString();
-        document.getElementById("value3").textContent = levels[currentLevel].updateableObjects.size.toString();
-        document.getElementById("value4").textContent = levels[currentLevel].objectsByFaction[2].size.toString();
-        document.getElementById("value5").textContent = levels[currentLevel].objectsByFaction[3].size.toString();
-        document.getElementById("value7").textContent = collisionChecks.toString();
-        if (levels[currentLevel].player != null) {
-            document.getElementById("value8").textContent = Math.round(vectorLength(levels[currentLevel].player.velocity)).toString();
-        }
+        // document.getElementById("value2").textContent = levels[currentLevel].drawableObjects.size.toString();
+        // document.getElementById("value3").textContent = levels[currentLevel].updateableObjects.size.toString();
+        // document.getElementById("value4").textContent = levels[currentLevel].objectsByFaction[2].size.toString();
+        // document.getElementById("value5").textContent = levels[currentLevel].objectsByFaction[3].size.toString();
+        // document.getElementById("value7").textContent = collisionChecks.toString();
+        // if (levels[currentLevel].player != null) {
+        //     document.getElementById("value8").textContent = Math.round(vectorLength(levels[currentLevel].player.velocity)).toString();
+        // }
         // document.getElementById("value10").textContent = performance.now() - lastFrameTime + "ms";
         document.getElementById("value10").textContent = Math.round(simulationFPSAverage).toString();
     }
@@ -89,18 +86,18 @@ document.addEventListener('keydown', (keypress) => {
     if (keypress.key == "Escape") {
         togglePause();
     }
-    if (keypress.key == "1") {
-        activateOrCreateLevel(1);
-    }
-    if (keypress.key == "2") {
-        activateOrCreateLevel(2);
-    }
-    if (keypress.key == "3") {
-        activateOrCreateLevel(3);
-    }
-    if (keypress.key == "r" && isPaused == false) {
-        levels[currentLevel] = new VoidforgedTestLevel(context);
-    }
+    // if (keypress.key == "1") {
+    //     activateOrCreateLevel(1);
+    // }
+    // if (keypress.key == "2") {
+    //     activateOrCreateLevel(2);
+    // }
+    // if (keypress.key == "3") {
+    //     activateOrCreateLevel(3);
+    // }
+    // if (keypress.key == "r" && isPaused == false) {
+    //     levels[currentLevel] = new VoidforgedTestLevel(context);
+    // }
 });
 document.addEventListener('keyup', (keypress) => {
     currentInputs.delete(keypress.key);
@@ -119,27 +116,28 @@ pauseButton.addEventListener("click", function () {
     this.blur(); //unfocus so spacebar can't trigger pause
 });
 function activateOrCreateLevel(number) {
-    if (levels[number] == null) {
-        if (number == 1) {
-            levels[number] = new VoidforgedTestLevel(context);
-        }
-        if (number == 2) {
-            levels[number] = new VoidforgedTestLevel(context);
-        }
-        if (number == 3) {
-            levels[number] = new VoidforgedTestLevel(context);
-        }
-    }
-    currentLevel = number;
+    //can load different kinds of level here
+    // if (levels[number] == null) {
+    //     if (number == 1) {
+    //         levels[number] = new VoidforgedTestLevel(context);
+    //     }
+    //     if (number == 2) {
+    //         levels[number] = new VoidforgedTestLevel(context);
+    //     }
+    //     if (number == 3) {
+    //         levels[number] = new VoidforgedTestLevel(context);
+    //     }
+    // }
+    // currentLevel = number;
 }
 function togglePause() {
     pauseMenu.classList.toggle("visible");
     lastFrameTime = performance.now();
     isPaused = !isPaused;
     pauseButton.textContent = "Continue";
-    if (levels[currentLevel].objectsByFaction[1].size == 0) {
+    if (game.currentLevel.player == null) {
         console.info("Restarting");
-        levels[currentLevel] = new VoidforgedTestLevel(context);
+        game;
         start();
         togglePause();
         pauseButton.textContent = "Restart";
@@ -153,4 +151,5 @@ window.addEventListener('DOMContentLoaded', (event) => {
 window.addEventListener('load', (event) => {
     start();
 });
+//pause game if windows is unfocused to prevent large simulation ticks
 window.onblur = () => togglePause();

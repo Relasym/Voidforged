@@ -1,4 +1,4 @@
-class VoidforgedDisplayObject extends GameObject {
+class VoidforgedObject extends GameObject {
     constructor(owner, shape, type, color) {
         super(owner, shape, type, color);
         this.imageDirection = imageDirection.Right;
@@ -14,7 +14,7 @@ class VoidforgedPlayer extends GameObject {
         this.maxSpeed = 2000;
         this.airFriction = 0.0;
         this.groundFriction = 10.0;
-        this.image = characterSpritesTurn[2];
+        this.image = this.level.game.characterSpritesTurn[2];
         this.affectedByGravity = true;
         this.faction = 1;
         this.imageDirection = imageDirection.Right;
@@ -25,9 +25,9 @@ class VoidforgedPlayer extends GameObject {
         this.velocity.y *= 1 - this.airFriction * currentFrameDuration / 1000;
     }
     updateAfterCollision(currentFrameDuration) {
-        if (currentInputs.size > 0) {
-            console.log(this.isContactingTerrain.up, this.isContactingTerrain.down, this.isContactingTerrain.right, this.isContactingTerrain.left);
-        }
+        // if(currentInputs.size>0) {
+        //     console.log(this.isContactingTerrain.up,this.isContactingTerrain.down,this.isContactingTerrain.right,this.isContactingTerrain.left);
+        // }
         if (currentInputs.has("a")) {
             this.velocity.x -= this.movementAcceleration * currentFrameDuration / 1000;
         }

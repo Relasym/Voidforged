@@ -10,7 +10,7 @@ var imageDirection;
 })(imageDirection || (imageDirection = {}));
 //basic object, includes register/deregister and destruction
 class GameObject {
-    constructor(owner, shape, type, color) {
+    constructor(level, shape, type, color) {
         this.velocity = { x: 0, y: 0 };
         this.maxspeed = 1000;
         //toggles
@@ -33,7 +33,7 @@ class GameObject {
             down: false,
             right: false,
         };
-        this.owner = owner;
+        this.level = level;
         this.shape = shape;
         this.type = type;
         this.color = color;
@@ -46,28 +46,36 @@ class GameObject {
         }
     }
     register() {
-        this.owner.allObjects.add(this);
+        this.level
+            .allObjects.add(this);
         if (this.isDrawable) {
-            this.owner.drawableObjects.add(this);
+            this.level
+                .drawableObjects.add(this);
         }
         if (this.isUpdateable) {
-            this.owner.updateableObjects.add(this);
+            this.level
+                .updateableObjects.add(this);
         }
-        this.owner.objectsByFaction[this.faction].add(this);
+        this.level
+            .objectsByFaction[this.faction].add(this);
     }
     deregister() {
-        this.owner.allObjects.delete(this);
+        this.level
+            .allObjects.delete(this);
         if (this.isDrawable) {
-            this.owner.drawableObjects.delete(this);
+            this.level
+                .drawableObjects.delete(this);
         }
         if (this.isUpdateable) {
-            this.owner.updateableObjects.delete(this);
+            this.level
+                .updateableObjects.delete(this);
         }
     }
     startDestruction() {
         this.hasCollision = false;
         this.isDestroying = true;
-        this.owner.objectsByFaction[this.faction].delete(this);
+        this.level
+            .objectsByFaction[this.faction].delete(this);
     }
     updateBeforeCollision(currentFrameDuration) {
         if (this.isDestroying) {
@@ -77,7 +85,8 @@ class GameObject {
             this.deregister();
         }
         if (this.affectedByGravity) {
-            this.velocity.y += this.owner.gravity * currentFrameDuration / 1000;
+            this.velocity.y += this.level
+                .gravity * currentFrameDuration / 1000;
         }
         this.resetTerrainContact();
     }
@@ -98,27 +107,40 @@ class GameObject {
     draw() {
         if (this.type == collisionType.Circle) {
             //todo add images for circle types
-            this.owner.context.beginPath();
-            this.owner.context.arc(this.shape.x - this.owner.camera.x, this.shape.y - this.owner.camera.y, this.shape.radius, 0, Math.PI * 2, false);
+            this.level
+                .context.beginPath();
+            this.level
+                .context.arc(this.shape.x - this.level
+                .camera.x, this.shape.y - this.level
+                .camera.y, this.shape.radius, 0, Math.PI * 2, false);
             if (this.isDestroying) {
-                this.owner.context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a * this.destructionProgress})`;
+                this.level
+                    .context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a * this.destructionProgress})`;
             }
             else {
-                this.owner.context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`;
+                this.level
+                    .context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`;
             }
-            this.owner.context.fill();
+            this.level
+                .context.fill();
         }
         if (this.type == collisionType.Rectangle) {
             if (this.isDestroying) {
-                this.owner.context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a * this.destructionProgress})`;
+                this.level
+                    .context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a * this.destructionProgress})`;
             }
             else {
-                this.owner.context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`;
+                this.level
+                    .context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`;
             }
-            this.owner.context.save();
-            this.owner.context.globalAlpha = this.destructionProgress;
-            let translateX = this.shape.x + this.shape.width / 2 - this.owner.camera.x;
-            let translateY = this.shape.y + this.shape.height / 2 - this.owner.camera.y;
+            this.level
+                .context.save();
+            this.level
+                .context.globalAlpha = this.destructionProgress;
+            let translateX = this.shape.x + this.shape.width / 2 - this.level
+                .camera.x;
+            let translateY = this.shape.y + this.shape.height / 2 - this.level
+                .camera.y;
             context.translate(translateX, translateY);
             if (this.canRotate) {
                 context.rotate(this.rotation);
@@ -134,17 +156,26 @@ class GameObject {
             }
             context.translate(-1 * translateX, -1 * translateY);
             if (this.image.src == "") {
-                context.fillRect(this.shape.x - this.owner.camera.x, this.shape.y - this.owner.camera.y, this.shape.width, this.shape.height);
+                context.fillRect(this.shape.x - this.level
+                    .camera.x, this.shape.y - this.level
+                    .camera.y, this.shape.width, this.shape.height);
             }
             else {
                 if (this.imageShape == null) {
-                    this.owner.context.drawImage(this.image, this.shape.x - this.owner.camera.x, this.shape.y - this.owner.camera.y, this.shape.width, this.shape.height);
+                    this.level
+                        .context.drawImage(this.image, this.shape.x - this.level
+                        .camera.x, this.shape.y - this.level
+                        .camera.y, this.shape.width, this.shape.height);
                 }
                 else {
-                    this.owner.context.drawImage(this.image, this.imageShape.x, this.imageShape.y, this.imageShape.width, this.imageShape.height, this.shape.x - this.owner.camera.x, this.shape.y - this.owner.camera.y, this.shape.width, this.shape.height);
+                    this.level
+                        .context.drawImage(this.image, this.imageShape.x, this.imageShape.y, this.imageShape.width, this.imageShape.height, this.shape.x - this.level
+                        .camera.x, this.shape.y - this.level
+                        .camera.y, this.shape.width, this.shape.height);
                 }
             }
-            this.owner.context.restore();
+            this.level
+                .context.restore();
         }
     }
     resetTerrainContact() {
@@ -156,8 +187,8 @@ class GameObject {
 }
 //what was this even for???
 class Actor extends GameObject {
-    constructor(owner, shape, type, color) {
-        super(owner, shape, type, color);
+    constructor(level, shape, type, color) {
+        super(level, shape, type, color);
         this.refireDelay = 1000; //ms
         this.lastFire = 0;
     }
@@ -170,18 +201,22 @@ class Actor extends GameObject {
 }
 //basic projectile, not doing much
 class Projectile extends GameObject {
-    constructor(owner, shape, type, color) {
-        super(owner, shape, type, color);
+    constructor(level, shape, type, color) {
+        super(level, shape, type, color);
         this.hasCollision = true;
     }
     register() {
         super.register();
-        this.owner.projectileObjects.add(this);
-        this.owner.projectilesByFaction[this.faction].add(this);
+        this.level
+            .projectileObjects.add(this);
+        this.level
+            .projectilesByFaction[this.faction].add(this);
     }
     deregister() {
         super.deregister();
-        this.owner.projectileObjects.delete(this);
-        this.owner.projectilesByFaction[this.faction].delete(this);
+        this.level
+            .projectileObjects.delete(this);
+        this.level
+            .projectilesByFaction[this.faction].delete(this);
     }
 }

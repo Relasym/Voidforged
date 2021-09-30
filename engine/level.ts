@@ -15,6 +15,10 @@ class Level {
     updateableObjects: Set<object> = new Set();
     projectileObjects: Set<object> = new Set();
 
+    usePlayerCamera = true;
+
+    game: Game;
+
     totalRuntime: number;
 
     factionAmount = 10; //realistically no more than 4-5 (0: terrain, 1: player, rest: other)
@@ -24,8 +28,9 @@ class Level {
     gravity = 300;
 
 
-    constructor(context: CanvasRenderingContext2D) {
+    constructor(context: CanvasRenderingContext2D,owner: Game) {
         this.context = context;
+        this.game=owner;
         for (let i = 0; i < this.factionAmount; i++) {
             this.projectilesByFaction.push(new Set());
             this.objectsByFaction.push(new Set());
@@ -36,7 +41,7 @@ class Level {
 
     draw() {
         if (this.backgroundImage != null) {
-            this.context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+            this.context.drawImage(this.game.backgroundImage, 0, 0, canvas.width, canvas.height);
         } else if (this.backgroundColor != null) {
             context.fillStyle = `rgba(${this.backgroundColor.r},${this.backgroundColor.g},${this.backgroundColor.b},${this.backgroundColor.a})`;
             context.fillRect(0, 0, canvas.width, canvas.height);
@@ -60,7 +65,7 @@ class Level {
             object.updateAfterCollision(currentFrameDuration);
         });
 
-        if (this.player != null) {
+        if (this.player != null && this.usePlayerCamera) {
             this.camera.x = this.player.shape.x - 400 + this.player.shape.width / 2;
             this.camera.y = this.player.shape.y - 300 + this.player.shape.height / 2;
         }

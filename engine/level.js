@@ -1,14 +1,16 @@
 class Level {
-    constructor(context) {
+    constructor(context, owner) {
         this.allObjects = new Set();
         this.drawableObjects = new Set();
         this.updateableObjects = new Set();
         this.projectileObjects = new Set();
+        this.usePlayerCamera = true;
         this.factionAmount = 10; //realistically no more than 4-5 (0: terrain, 1: player, rest: other)
         this.objectsByFaction = [];
         this.projectilesByFaction = [];
         this.gravity = 300;
         this.context = context;
+        this.game = owner;
         for (let i = 0; i < this.factionAmount; i++) {
             this.projectilesByFaction.push(new Set());
             this.objectsByFaction.push(new Set());
@@ -18,7 +20,7 @@ class Level {
     }
     draw() {
         if (this.backgroundImage != null) {
-            this.context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+            this.context.drawImage(this.game.backgroundImage, 0, 0, canvas.width, canvas.height);
         }
         else if (this.backgroundColor != null) {
             context.fillStyle = `rgba(${this.backgroundColor.r},${this.backgroundColor.g},${this.backgroundColor.b},${this.backgroundColor.a})`;
@@ -40,7 +42,7 @@ class Level {
         this.updateableObjects.forEach((object) => {
             object.updateAfterCollision(currentFrameDuration);
         });
-        if (this.player != null) {
+        if (this.player != null && this.usePlayerCamera) {
             this.camera.x = this.player.shape.x - 400 + this.player.shape.width / 2;
             this.camera.y = this.player.shape.y - 300 + this.player.shape.height / 2;
         }

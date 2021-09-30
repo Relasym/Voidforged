@@ -8,8 +8,10 @@
         "engine/gameObjects.ts",
         "engine/level.ts",
         "engine/collisions.ts",
+        "engine/game.ts",
         "voidforged/voidforgedMain.ts",
         "voidforged/voidforgedObjects.ts",
-        "voidforged/voidforgedLevels.ts"
+        "voidforged/voidforgedLevels.ts",
+        "voidforged/voidforgedGame.ts"
     ]
 }

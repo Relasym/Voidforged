@@ -1,36 +1,36 @@
-class VoidforgedTestLevel extends Level {
-    constructor(context) {
-        super(context);
+class VoidforgedLevel extends Level {
+    constructor(context, owner) {
+        super(context, owner);
+        this.usePlayerCamera = false;
         this.start();
-        console.log(this.objectsByFaction);
         this.backgroundColor = { r: 100, b: 100, g: 100, a: 1 };
         this.gravity = 1500;
-        this.backgroundImage = backgroundImage;
+        this.backgroundImage = this.game.backgroundImage;
     }
     start() {
         //sprite test
         let images = new Array();
-        for (let image of wallBlock) {
+        for (let image of this.game.wallBlock) {
             images.push(image);
         }
-        for (let image of wallBlockNew) {
+        for (let image of this.game.wallBlockNew) {
             images.push(image);
         }
-        images.push(caveWallBlock);
-        images.push(groundFlat);
-        images.push(groundSlanted);
-        images.push(platformMid);
-        images.push(platformEnd);
-        for (let image of characterSpritesWalk) {
+        images.push(this.game.caveWallBlock);
+        images.push(this.game.groundFlat);
+        images.push(this.game.groundSlanted);
+        images.push(this.game.platformMid);
+        images.push(this.game.platformEnd);
+        for (let image of this.game.characterSpritesWalk) {
             images.push(image);
         }
-        for (let image of characterSpritesTurn) {
+        for (let image of this.game.characterSpritesTurn) {
             images.push(image);
         }
         let xCoord = 0;
         let yCoord = 0;
         for (let image of images) {
-            let newObject = new VoidforgedDisplayObject(this, { x: xCoord, y: yCoord, width: 32, height: 32 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
+            let newObject = new VoidforgedObject(this, { x: xCoord, y: yCoord, width: 32, height: 32 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
             newObject.image = image;
             xCoord += 32;
             newObject.faction = 0;
@@ -39,6 +39,7 @@ class VoidforgedTestLevel extends Level {
         //player
         let player = new VoidforgedPlayer(this, { x: 100, y: 100, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
         player.register();
+        this.player = player;
         //walls
         let blocksize = 64;
         for (let i = 0; i < Math.floor(canvas.width / blocksize); i++) {
@@ -67,15 +68,15 @@ class VoidforgedTestLevel extends Level {
         this.createWallBlock(blocksize * 9, canvas.height - 3 * blocksize);
     }
     createWallBlock(x, y) {
-        let newBlock = new VoidforgedDisplayObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
-        let block = Math.random() * wallBlockNew.length;
-        newBlock.image = wallBlockNew[Math.floor(block)];
+        let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
+        let block = Math.random() * this.game.wallBlockNew.length;
+        newBlock.image = this.game.wallBlockNew[Math.floor(block)];
         newBlock.faction = 0;
         newBlock.register();
     }
     createFillerBlock(x, y) {
-        let newBlock = new VoidforgedDisplayObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
-        newBlock.image = caveWallBlock;
+        let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
+        newBlock.image = this.game.caveWallBlock;
         newBlock.faction = 0;
         newBlock.register();
     }
@@ -190,5 +191,10 @@ class VoidforgedTestLevel extends Level {
                 }
             }
         }
+    }
+}
+class VoidforgedLevelRight extends VoidforgedLevel {
+    start() {
+        super.start();
     }
 }
