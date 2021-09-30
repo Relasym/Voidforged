@@ -35,7 +35,9 @@ class Level {
     }
 
     draw() {
-        if (this.backgroundColor != null) {
+        if (this.backgroundImage != null) {
+            this.context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+        } else if (this.backgroundColor != null) {
             context.fillStyle = `rgba(${this.backgroundColor.r},${this.backgroundColor.g},${this.backgroundColor.b},${this.backgroundColor.a})`;
             context.fillRect(0, 0, canvas.width, canvas.height);
         }

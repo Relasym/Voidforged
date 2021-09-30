@@ -4,7 +4,8 @@ class VoidforgedTestLevel extends Level {
         this.start();
         console.log(this.objectsByFaction);
         this.backgroundColor = { r: 100, b: 100, g: 100, a: 1 };
-        this.gravity = 1000;
+        this.gravity = 1500;
+        this.backgroundImage = backgroundImage;
     }
     start() {
         //sprite test
@@ -27,7 +28,7 @@ class VoidforgedTestLevel extends Level {
             images.push(image);
         }
         let xCoord = 0;
-        let yCoord = 250;
+        let yCoord = 0;
         for (let image of images) {
             let newObject = new VoidforgedDisplayObject(this, { x: xCoord, y: yCoord, width: 32, height: 32 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
             newObject.image = image;
@@ -41,15 +42,29 @@ class VoidforgedTestLevel extends Level {
         //walls
         let blocksize = 64;
         for (let i = 0; i < Math.floor(canvas.width / blocksize); i++) {
-            this.createWallBlock(blocksize * i, 0);
             this.createFillerBlock(blocksize * i, canvas.height - blocksize * 1);
-            this.createFillerBlock(blocksize * i, canvas.height - blocksize * 2);
-            this.createWallBlock(blocksize * i, canvas.height - blocksize * 3);
+            this.createFillerBlock(blocksize * i, 0);
             if (i < Math.floor(canvas.height / blocksize)) {
-                this.createWallBlock(0, blocksize * i);
-                this.createWallBlock(canvas.width - blocksize, blocksize * i);
+                this.createFillerBlock(0, blocksize * i);
+                this.createFillerBlock(canvas.width - blocksize, blocksize * i);
             }
         }
+        //some blocks to jump around on
+        for (let i = 1; i < Math.floor(canvas.width / blocksize) - 1; i++) {
+            this.createWallBlock(blocksize * i, canvas.height - 2 * blocksize);
+        }
+        this.createWallBlock(blocksize * 1, canvas.height - 4 * blocksize);
+        this.createWallBlock(blocksize * 1, canvas.height - 3 * blocksize);
+        this.createWallBlock(blocksize * 2, canvas.height - 3 * blocksize);
+        this.createWallBlock(blocksize * 5, canvas.height - 3 * blocksize);
+        this.createWallBlock(blocksize * 6, canvas.height - 4 * blocksize);
+        this.createWallBlock(blocksize * 6, canvas.height - 3 * blocksize);
+        this.createWallBlock(blocksize * 7, canvas.height - 5 * blocksize);
+        this.createWallBlock(blocksize * 7, canvas.height - 4 * blocksize);
+        this.createWallBlock(blocksize * 7, canvas.height - 3 * blocksize);
+        this.createWallBlock(blocksize * 8, canvas.height - 4 * blocksize);
+        this.createWallBlock(blocksize * 8, canvas.height - 3 * blocksize);
+        this.createWallBlock(blocksize * 9, canvas.height - 3 * blocksize);
     }
     createWallBlock(x, y) {
         let newBlock = new VoidforgedDisplayObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });

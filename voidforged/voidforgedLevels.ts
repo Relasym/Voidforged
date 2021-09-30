@@ -4,7 +4,8 @@ class VoidforgedTestLevel extends Level {
         this.start();
         console.log(this.objectsByFaction);
         this.backgroundColor = { r: 100, b: 100, g: 100, a: 1 };
-        this.gravity = 1000;
+        this.gravity = 1500;
+        this.backgroundImage=backgroundImage;
     }
 
     start() {
@@ -29,7 +30,7 @@ class VoidforgedTestLevel extends Level {
             images.push(image);
         }
         let xCoord = 0;
-        let yCoord = 250;
+        let yCoord = 0;
         for (let image of images) {
             let newObject = new VoidforgedDisplayObject(this, { x: xCoord, y: yCoord, width: 32, height: 32 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
             newObject.image = image;
@@ -43,19 +44,32 @@ class VoidforgedTestLevel extends Level {
         player.register();
 
         //walls
-        let blocksize=64;
+        let blocksize = 64;
         for (let i = 0; i < Math.floor(canvas.width / blocksize); i++) {
-            this.createWallBlock(blocksize* i, 0);
-            this.createFillerBlock(blocksize * i, canvas.height - blocksize*1);
-            this.createFillerBlock(blocksize * i, canvas.height - blocksize*2);
-            this.createWallBlock(blocksize * i, canvas.height - blocksize*3);
-
+            this.createFillerBlock(blocksize * i, canvas.height - blocksize * 1);
+            this.createFillerBlock(blocksize * i, 0);
             if (i < Math.floor(canvas.height / blocksize)) {
-                this.createWallBlock(0, blocksize * i);
-                this.createWallBlock(canvas.width - blocksize, blocksize * i);
+                this.createFillerBlock(0, blocksize * i);
+                this.createFillerBlock(canvas.width - blocksize, blocksize * i);
             }
-
         }
+
+        //some blocks to jump around on
+        for(let i = 1; i<Math.floor(canvas.width/blocksize)-1;i++) {
+            this.createWallBlock(blocksize*i,canvas.height-2*blocksize);
+        }
+        this.createWallBlock(blocksize*1,canvas.height-4*blocksize);
+        this.createWallBlock(blocksize*1,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*2,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*5,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*6,canvas.height-4*blocksize);
+        this.createWallBlock(blocksize*6,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*7,canvas.height-5*blocksize);
+        this.createWallBlock(blocksize*7,canvas.height-4*blocksize);
+        this.createWallBlock(blocksize*7,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*8,canvas.height-4*blocksize);
+        this.createWallBlock(blocksize*8,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*9,canvas.height-3*blocksize);
 
 
 
@@ -158,9 +172,9 @@ class VoidforgedTestLevel extends Level {
                         distances.push(object1.shape.y + object1.shape.height - object2.shape.y);
                         distances.push(object2.shape.y + object2.shape.height - object1.shape.y);
 
-                        for (let i = 0; i<distances.length;i++) {
-                            if(distances[i]<0) {
-                                distances[i]=9999; //TODO fix hack
+                        for (let i = 0; i < distances.length; i++) {
+                            if (distances[i] < 0) {
+                                distances[i] = 9999; //TODO fix hack
                             }
                         }
                         let index = distances.indexOf(Math.min(...distances));
@@ -168,25 +182,25 @@ class VoidforgedTestLevel extends Level {
                             case 0: {
                                 object1.shape.x -= distances[index];
                                 object1.velocity.x = 0;
-                                object1.isContactingTerrain.right=true;
+                                object1.isContactingTerrain.right = true;
                                 break;
                             }
                             case 1: {
                                 object1.shape.x += distances[index];
                                 object1.velocity.x = 0;
-                                object1.isContactingTerrain.left=true;
+                                object1.isContactingTerrain.left = true;
                                 break;
                             }
                             case 2: {
                                 object1.shape.y -= distances[index];
                                 object1.velocity.y = 0;
-                                object1.isContactingTerrain.down=true;
+                                object1.isContactingTerrain.down = true;
                                 break;
                             }
                             case 3: {
                                 object1.shape.y += distances[index];
                                 object1.velocity.y = 0;
-                                object1.isContactingTerrain.up=true;
+                                object1.isContactingTerrain.up = true;
                                 break;
                             }
                         }
