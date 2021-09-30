@@ -199,3 +199,5 @@ window.addEventListener('DOMContentLoaded', (event) => {
 window.addEventListener('load', (event) => {
     start();
 });
+
+window.onblur=()=>togglePause();
