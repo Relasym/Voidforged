@@ -148,15 +148,15 @@ class VoidforgedTestLevel extends Level {
             for (let object1 of objectsByFaction[i]) {
                 for (let object2 of objectsByFaction[0]) {
                     if (object1.hasCollision && object2.hasCollision && areObjectsColliding(object1, object2)) {
-                        object1.velocity = { x: 0, y: 0 };
+                        // object1.velocity = { x: 0, y: 0 };
 
                         //push object out instead
 
                         let distances: number[] = new Array();
+                        distances.push(object1.shape.x + object1.shape.width - object2.shape.x);
                         distances.push(object2.shape.x + object2.shape.width - object1.shape.x);
-                        distances.push(object2.shape.x - object1.shape.x - object1.shape.width);
+                        distances.push(object1.shape.y + object1.shape.height - object2.shape.y);
                         distances.push(object2.shape.y + object2.shape.height - object1.shape.y);
-                        distances.push(object2.shape.y - object1.shape.y - object2.shape.height);
 
                         let absDist: number[] = new Array();
                         for (let i = 0; i < distances.length; i++) {
@@ -166,7 +166,7 @@ class VoidforgedTestLevel extends Level {
                         let index = absDist.indexOf(minNum);
                         switch (index) {
                             case 0: {
-                                object1.shape.x += distances[index];
+                                object1.shape.x -= distances[index];
                                 object1.velocity.x = 0;
                                 object1.isContactingTerrain.left=true;
                                 break;
@@ -178,7 +178,7 @@ class VoidforgedTestLevel extends Level {
                                 break;
                             }
                             case 2: {
-                                object1.shape.y += distances[index];
+                                object1.shape.y -= distances[index];
                                 object1.velocity.y = 0;
                                 object1.isContactingTerrain.up=true;
                                 break;
