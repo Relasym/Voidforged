@@ -18,6 +18,22 @@ class VoidforgedPlayer extends GameObject {
         this.affectedByGravity = true;
         this.faction = 1;
         this.imageDirection = imageDirection.Right;
+        for (let i = 0; i < this.level.game.characterSpritesWalk.length; i++) {
+            this.walkFrames.push({
+                image: this.level.game.characterSpritesWalk[i],
+                imageShape: {
+                    x: 0,
+                    y: 0,
+                    width: this.level.game.characterSpritesWalk[i].width,
+                    height: this.level.game.characterSpritesWalk[i].height
+                },
+                imageDirection: imageDirection.Left
+            });
+        }
+        this.currentWalkFrame = 0;
+        this.timeInWalkFrame = 0;
+        this.timePerWalkFrame = 200;
+        this.hasAnimation = true;
     }
     updateBeforeCollision(currentFrameDuration) {
         super.updateBeforeCollision(currentFrameDuration);

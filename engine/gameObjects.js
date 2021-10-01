@@ -23,6 +23,9 @@ class GameObject {
         this.destructionTime = 300; //ms
         this.destructionProgress = 1.0; //destroys object if it reaches 0, used as a multiplier for color alpha
         this.movesWhileDestroying = false;
+        //animation Frames
+        this.hasAnimation = false;
+        this.minWalkAnimationSpeed = 5;
         //current angle && rotation toggle
         this.rotation = 0;
         this.canRotate = false;
@@ -38,6 +41,7 @@ class GameObject {
         this.type = type;
         this.color = color;
         this.image = new Image();
+        this.walkFrames = new Array();
         //maximum radius for simple collision checking
         if (this.shape.radius == undefined) {
             if (this.type == collisionType.Rectangle) {
@@ -137,10 +141,8 @@ class GameObject {
                 .context.save();
             this.level
                 .context.globalAlpha = this.destructionProgress;
-            let translateX = this.shape.x + this.shape.width / 2 - this.level
-                .camera.x;
-            let translateY = this.shape.y + this.shape.height / 2 - this.level
-                .camera.y;
+            let translateX = this.shape.x + this.shape.width / 2 - this.level.camera.x;
+            let translateY = this.shape.y + this.shape.height / 2 - this.level.camera.y;
             context.translate(translateX, translateY);
             if (this.canRotate) {
                 context.rotate(this.rotation);
@@ -155,23 +157,27 @@ class GameObject {
                 }
             }
             context.translate(-1 * translateX, -1 * translateY);
-            if (this.image.src == "") {
-                context.fillRect(this.shape.x - this.level
-                    .camera.x, this.shape.y - this.level
-                    .camera.y, this.shape.width, this.shape.height);
+            if (this.hasAnimation) {
+                if (this.timeInWalkFrame > this.timePerWalkFrame && Math.abs(this.velocity.x) > this.minWalkAnimationSpeed && this.isContactingTerrain.down) {
+                    //next frame
+                    this.currentWalkFrame = (this.currentWalkFrame + 1) % this.walkFrames.length;
+                    this.timeInWalkFrame = 0;
+                }
+                this.timeInWalkFrame += currentFrameDuration;
+                //draw frame
+                this.level.context.drawImage(this.walkFrames[this.currentWalkFrame].image, this.walkFrames[this.currentWalkFrame].imageShape.x, this.walkFrames[this.currentWalkFrame].imageShape.y, this.walkFrames[this.currentWalkFrame].imageShape.width, this.walkFrames[this.currentWalkFrame].imageShape.height, this.shape.x - this.level.camera.x, this.shape.y - this.level.camera.y, this.shape.width, this.shape.height);
             }
             else {
-                if (this.imageShape == null) {
-                    this.level
-                        .context.drawImage(this.image, this.shape.x - this.level
-                        .camera.x, this.shape.y - this.level
-                        .camera.y, this.shape.width, this.shape.height);
+                if (this.image.src == "") {
+                    context.fillRect(this.shape.x - this.level.camera.x, this.shape.y - this.level.camera.y, this.shape.width, this.shape.height);
                 }
                 else {
-                    this.level
-                        .context.drawImage(this.image, this.imageShape.x, this.imageShape.y, this.imageShape.width, this.imageShape.height, this.shape.x - this.level
-                        .camera.x, this.shape.y - this.level
-                        .camera.y, this.shape.width, this.shape.height);
+                    if (this.imageShape == null) {
+                        this.level.context.drawImage(this.image, this.shape.x - this.level.camera.x, this.shape.y - this.level.camera.y, this.shape.width, this.shape.height);
+                    }
+                    else {
+                        this.level.context.drawImage(this.image, this.imageShape.x, this.imageShape.y, this.imageShape.width, this.imageShape.height, this.shape.x - this.level.camera.x, this.shape.y - this.level.camera.y, this.shape.width, this.shape.height);
+                    }
                 }
             }
             this.level
