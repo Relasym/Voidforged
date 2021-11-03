@@ -59,6 +59,7 @@ class VoidforgedGame extends Game {
             this.characterSpritesWalk.push(new Image());
             this.characterSpritesWalk[i].src = characterSpritesWalkSrc[i];
         }
+        this.characterSpritesWalk.reverse();
         //turn
         let characterSpritesTurnSrc: string[] = new Array();
         characterSpritesTurnSrc.push("img\\Sprites\\1Character cheap2 side new.png");

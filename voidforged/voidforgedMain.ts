@@ -1,7 +1,6 @@
 class L {
     owner: SG;
     constructor(){
-        this.owner.image
     }
 
 }
