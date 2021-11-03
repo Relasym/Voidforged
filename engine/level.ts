@@ -4,6 +4,7 @@ type camera = {
 }
 
 class Level {
+    name: String;
     context: CanvasRenderingContext2D;
     player?: PlayerInterface;
     camera?: camera;

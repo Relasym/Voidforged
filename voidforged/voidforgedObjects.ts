@@ -14,9 +14,9 @@ class VoidforgedPlayer extends GameObject {
     maxSpeed = 2000;
     airFriction = 0.0;
     groundFriction = 10.0;
-    level: VoidforgedLevel;
+    level: VoidforgedEmptyLevel;
 
-    constructor(owner: VoidforgedLevel, shape: shape, type: collisionType, color: color) {
+    constructor(owner: VoidforgedEmptyLevel, shape: shape, type: collisionType, color: color) {
         super(owner, shape, type, color);
         this.image = this.level.game.characterSpritesTurn[2];
         this.affectedByGravity = true;

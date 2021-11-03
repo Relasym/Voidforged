@@ -75,7 +75,7 @@ class VoidforgedGame extends Game {
 
     }
     restart(){
-        let level = new VoidforgedLevel(context,this);
+        let level = new VoidforgedLevelLeft(context,this);
         this.levels.push(level);
         this.currentLevel=level;
     }

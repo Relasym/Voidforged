@@ -1,5 +1,5 @@
-class VoidforgedLevel extends Level {
-    loadLevel :VoidforgedLevel;
+class VoidforgedEmptyLevel extends Level {
+    loadLevel :VoidforgedEmptyLevel;
     game: VoidforgedGame;
     constructor(context: CanvasRenderingContext2D, owner: VoidforgedGame) {
         super(context,owner);
@@ -13,33 +13,33 @@ class VoidforgedLevel extends Level {
     start() {
 
         //sprite test
-        let images: HTMLImageElement[] = new Array();
-        for (let image of this.game.wallBlock) {
-            images.push(image);
-        }
-        for (let image of this.game.wallBlockNew) {
-            images.push(image);
-        }
-        images.push(this.game.caveWallBlock);
-        images.push(this.game.groundFlat);
-        images.push(this.game.groundSlanted);
-        images.push(this.game.platformMid);
-        images.push(this.game.platformEnd);
-        for (let image of this.game.characterSpritesWalk) {
-            images.push(image);
-        }
-        for (let image of this.game.characterSpritesTurn) {
-            images.push(image);
-        }
-        let xCoord = 0;
-        let yCoord = 0;
-        for (let image of images) {
-            let newObject = new VoidforgedObject(this, { x: xCoord, y: yCoord, width: 32, height: 32 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
-            newObject.image = image;
-            xCoord += 32;
-            newObject.faction = 0;
-            newObject.register();
-        }
+        // let images: HTMLImageElement[] = new Array();
+        // for (let image of this.game.wallBlock) {
+        //     images.push(image);
+        // }
+        // for (let image of this.game.wallBlockNew) {
+        //     images.push(image);
+        // }
+        // images.push(this.game.caveWallBlock);
+        // images.push(this.game.groundFlat);
+        // images.push(this.game.groundSlanted);
+        // images.push(this.game.platformMid);
+        // images.push(this.game.platformEnd);
+        // for (let image of this.game.characterSpritesWalk) {
+        //     images.push(image);
+        // }
+        // for (let image of this.game.characterSpritesTurn) {
+        //     images.push(image);
+        // }
+        // let xCoord = 0;
+        // let yCoord = 0;
+        // for (let image of images) {
+        //     let newObject = new VoidforgedObject(this, { x: xCoord, y: yCoord, width: 32, height: 32 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
+        //     newObject.image = image;
+        //     xCoord += 32;
+        //     newObject.faction = 0;
+        //     newObject.register();
+        // }
 
         //player
         let player = new VoidforgedPlayer(this, { x: 100, y: 100, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
@@ -57,22 +57,7 @@ class VoidforgedLevel extends Level {
             }
         }
 
-        //some blocks to jump around on
-        for(let i = 1; i<Math.floor(canvas.width/blocksize)-1;i++) {
-            this.createWallBlock(blocksize*i,canvas.height-2*blocksize);
-        }
-        this.createWallBlock(blocksize*1,canvas.height-4*blocksize);
-        this.createWallBlock(blocksize*1,canvas.height-3*blocksize);
-        this.createWallBlock(blocksize*2,canvas.height-3*blocksize);
-        this.createWallBlock(blocksize*5,canvas.height-3*blocksize);
-        this.createWallBlock(blocksize*6,canvas.height-4*blocksize);
-        this.createWallBlock(blocksize*6,canvas.height-3*blocksize);
-        this.createWallBlock(blocksize*7,canvas.height-5*blocksize);
-        this.createWallBlock(blocksize*7,canvas.height-4*blocksize);
-        this.createWallBlock(blocksize*7,canvas.height-3*blocksize);
-        this.createWallBlock(blocksize*8,canvas.height-4*blocksize);
-        this.createWallBlock(blocksize*8,canvas.height-3*blocksize);
-        this.createWallBlock(blocksize*9,canvas.height-3*blocksize);
+       
 
 
 
@@ -210,11 +195,6 @@ class VoidforgedLevel extends Level {
 
 
 
-
-
-
-
-
                     }
                 }
             }
@@ -224,9 +204,43 @@ class VoidforgedLevel extends Level {
 
 }
 
-class VoidforgedLevelRight extends VoidforgedLevel {
+class VoidforgedLevelLeft extends VoidforgedEmptyLevel {
     start() {
         super.start();
+
+        let blocksize = 64;
+         //some blocks to jump around on
+         for(let i = 1; i<Math.floor(canvas.width/blocksize)-1;i++) {
+            this.createWallBlock(blocksize*i,canvas.height-2*blocksize);
+        }
+
+        this.createWallBlock(blocksize*1,canvas.height-5*blocksize);
+        this.createWallBlock(blocksize*1,canvas.height-4*blocksize);
+        this.createWallBlock(blocksize*1,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*2,canvas.height-4*blocksize);
+        this.createWallBlock(blocksize*2,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*3,canvas.height-3*blocksize);
+
+    }
+}
+
+
+class VoidforgedLevelRight extends VoidforgedEmptyLevel {
+    start() {
+        super.start();
+
+        let blocksize = 64;
+         //some blocks to jump around on
+         for(let i = 1; i<Math.floor(canvas.width/blocksize)-1;i++) {
+            this.createWallBlock(blocksize*i,canvas.height-2*blocksize);
+        }
+
+        this.createWallBlock(blocksize*9,canvas.height-5*blocksize);
+        this.createWallBlock(blocksize*9,canvas.height-4*blocksize);
+        this.createWallBlock(blocksize*9,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*8,canvas.height-4*blocksize);
+        this.createWallBlock(blocksize*8,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*7,canvas.height-3*blocksize);
 
     }
 }
