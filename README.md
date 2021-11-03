@@ -1,6 +1,6 @@
 # Voidforged
-Because the world needs more 2D metroidvanias.
+Because the world needs more metroidvanias.
 
-Based on Penguins.
+Based on Penguins project.
 
 Tips for Internet Explorer Users: don't.

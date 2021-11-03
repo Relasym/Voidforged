@@ -1,6 +1,5 @@
 class L {
     constructor() {
-        this.owner.image;
     }
 }
 class SL extends L {

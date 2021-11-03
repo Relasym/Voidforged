@@ -8,6 +8,8 @@ a {
 
 html {
     margin: 0;
+    background-color: rgb(17, 17, 17);
+    color: whitesmoke;
 }
 
 h1 {

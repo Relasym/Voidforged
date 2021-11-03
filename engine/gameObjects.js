@@ -50,36 +50,28 @@ class GameObject {
         }
     }
     register() {
-        this.level
-            .allObjects.add(this);
+        this.level.allObjects.add(this);
         if (this.isDrawable) {
-            this.level
-                .drawableObjects.add(this);
+            this.level.drawableObjects.add(this);
         }
         if (this.isUpdateable) {
-            this.level
-                .updateableObjects.add(this);
+            this.level.updateableObjects.add(this);
         }
-        this.level
-            .objectsByFaction[this.faction].add(this);
+        this.level.objectsByFaction[this.faction].add(this);
     }
     deregister() {
-        this.level
-            .allObjects.delete(this);
+        this.level.allObjects.delete(this);
         if (this.isDrawable) {
-            this.level
-                .drawableObjects.delete(this);
+            this.level.drawableObjects.delete(this);
         }
         if (this.isUpdateable) {
-            this.level
-                .updateableObjects.delete(this);
+            this.level.updateableObjects.delete(this);
         }
     }
     startDestruction() {
         this.hasCollision = false;
         this.isDestroying = true;
-        this.level
-            .objectsByFaction[this.faction].delete(this);
+        this.level.objectsByFaction[this.faction].delete(this);
     }
     updateBeforeCollision(currentFrameDuration) {
         if (this.isDestroying) {
@@ -111,36 +103,25 @@ class GameObject {
     draw() {
         if (this.type == collisionType.Circle) {
             //todo add images for circle types
-            this.level
-                .context.beginPath();
-            this.level
-                .context.arc(this.shape.x - this.level
-                .camera.x, this.shape.y - this.level
-                .camera.y, this.shape.radius, 0, Math.PI * 2, false);
+            this.level.context.beginPath();
+            this.level.context.arc(this.shape.x - this.level.camera.x, this.shape.y - this.level.camera.y, this.shape.radius, 0, Math.PI * 2, false);
             if (this.isDestroying) {
-                this.level
-                    .context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a * this.destructionProgress})`;
+                this.level.context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a * this.destructionProgress})`;
             }
             else {
-                this.level
-                    .context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`;
+                this.level.context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`;
             }
-            this.level
-                .context.fill();
+            this.level.context.fill();
         }
         if (this.type == collisionType.Rectangle) {
             if (this.isDestroying) {
-                this.level
-                    .context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a * this.destructionProgress})`;
+                this.level.context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a * this.destructionProgress})`;
             }
             else {
-                this.level
-                    .context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`;
+                this.level.context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`;
             }
-            this.level
-                .context.save();
-            this.level
-                .context.globalAlpha = this.destructionProgress;
+            this.level.context.save();
+            this.level.context.globalAlpha = this.destructionProgress;
             let translateX = this.shape.x + this.shape.width / 2 - this.level.camera.x;
             let translateY = this.shape.y + this.shape.height / 2 - this.level.camera.y;
             context.translate(translateX, translateY);
@@ -180,8 +161,7 @@ class GameObject {
                     }
                 }
             }
-            this.level
-                .context.restore();
+            this.level.context.restore();
         }
     }
     resetTerrainContact() {
@@ -213,16 +193,12 @@ class Projectile extends GameObject {
     }
     register() {
         super.register();
-        this.level
-            .projectileObjects.add(this);
-        this.level
-            .projectilesByFaction[this.faction].add(this);
+        this.level.projectileObjects.add(this);
+        this.level.projectilesByFaction[this.faction].add(this);
     }
     deregister() {
         super.deregister();
-        this.level
-            .projectileObjects.delete(this);
-        this.level
-            .projectilesByFaction[this.faction].delete(this);
+        this.level.projectileObjects.delete(this);
+        this.level.projectilesByFaction[this.faction].delete(this);
     }
 }

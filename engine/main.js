@@ -141,7 +141,7 @@ function togglePause() {
         start();
         togglePause();
         pauseButton.textContent = "Restart";
-        document.getElementById("menuline2").innerHTML = "use WASD to hunt tasty fish!";
+        document.getElementById("menuline2").innerHTML = "voidforged message";
     }
 }
 //DOM loaded
