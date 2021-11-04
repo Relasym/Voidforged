@@ -8,7 +8,6 @@ class Level {
         this.factionAmount = 10; //realistically no more than 4-5 (0: terrain, 1: player, rest: other)
         this.objectsByFaction = [];
         this.projectilesByFaction = [];
-        this.gravity = 300;
         this.context = context;
         this.game = owner;
         for (let i = 0; i < this.factionAmount; i++) {
@@ -17,8 +16,11 @@ class Level {
         }
         this.totalRuntime = 0;
         this.camera = { x: 0, y: 0 };
+        this.isPaused = false;
+        this.timeScale = 1.0;
     }
-    draw() {
+    draw(timeScale) {
+        let effectiveTimeScale = timeScale * this.timeScale;
         if (this.backgroundImage != null) {
             this.context.drawImage(this.game.backgroundImage, 0, 0, canvas.width, canvas.height);
         }
@@ -26,21 +28,25 @@ class Level {
             context.fillStyle = `rgba(${this.backgroundColor.r},${this.backgroundColor.g},${this.backgroundColor.b},${this.backgroundColor.a})`;
             context.fillRect(0, 0, canvas.width, canvas.height);
         }
+        else {
+            console.warn("Neither Background nor backgroundcolor set");
+        }
         this.drawableObjects.forEach((object) => {
-            object.draw();
+            object.draw(effectiveTimeScale);
         });
         if (this.player != null) {
-            this.player.draw();
+            this.player.draw(effectiveTimeScale);
         }
     }
-    update(currentFrameDuration) {
+    update(currentFrameDuration, timeScale) {
+        let effectiveTimeScale = timeScale * this.timeScale;
         this.totalRuntime += currentFrameDuration;
         this.updateableObjects.forEach((object) => {
-            object.updateBeforeCollision(currentFrameDuration);
+            object.updateBeforeCollision(currentFrameDuration, effectiveTimeScale);
         });
         this.handleCollisions(this.objectsByFaction, this.projectilesByFaction);
         this.updateableObjects.forEach((object) => {
-            object.updateAfterCollision(currentFrameDuration);
+            object.updateAfterCollision(currentFrameDuration, effectiveTimeScale);
         });
         if (this.player != null && this.usePlayerCamera) {
             this.camera.x = this.player.shape.x - 400 + this.player.shape.width / 2;

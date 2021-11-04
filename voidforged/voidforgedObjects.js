@@ -7,13 +7,15 @@ class VoidforgedObject extends GameObject {
         ;
     }
 }
+class VoidforgedActor extends Actor {
+}
 class VoidforgedPlayer extends GameObject {
     constructor(owner, shape, type, color) {
         super(owner, shape, type, color);
         this.movementAcceleration = 500; //per second
         this.maxSpeed = 2000;
         this.airFriction = 0.0;
-        this.groundFriction = 10.0;
+        this.groundFriction = 5.0;
         this.image = this.level.game.characterSpritesTurn[2];
         this.affectedByGravity = true;
         this.faction = 1;
@@ -35,20 +37,20 @@ class VoidforgedPlayer extends GameObject {
         this.timePerWalkFrame = 200;
         this.hasAnimation = true;
     }
-    updateBeforeCollision(currentFrameDuration) {
-        super.updateBeforeCollision(currentFrameDuration);
+    updateBeforeCollision(currentFrameDuration, timeScale) {
+        super.updateBeforeCollision(currentFrameDuration, timeScale);
         this.velocity.x *= 1 - this.airFriction * currentFrameDuration / 1000;
         this.velocity.y *= 1 - this.airFriction * currentFrameDuration / 1000;
     }
-    updateAfterCollision(currentFrameDuration) {
+    updateAfterCollision(currentFrameDuration, timeScale) {
         // if(currentInputs.size>0) {
         //     console.log(this.isContactingTerrain.up,this.isContactingTerrain.down,this.isContactingTerrain.right,this.isContactingTerrain.left);
         // }
         if (currentInputs.has("a")) {
-            this.velocity.x -= this.movementAcceleration * currentFrameDuration / 1000;
+            this.velocity.x -= this.movementAcceleration * currentFrameDuration * timeScale / 1000;
         }
         if (currentInputs.has("d")) {
-            this.velocity.x += this.movementAcceleration * currentFrameDuration / 1000;
+            this.velocity.x += this.movementAcceleration * currentFrameDuration * timeScale / 1000;
         }
         if (currentInputs.has("w") && this.isContactingTerrain.down) {
             this.velocity.y -= 500;
@@ -57,8 +59,10 @@ class VoidforgedPlayer extends GameObject {
             // this.velocity.y+=300;
         }
         if (this.isContactingTerrain.down) {
-            this.velocity.x *= 1 - this.groundFriction * currentFrameDuration / 1000;
+            this.velocity.x *= 1 - this.groundFriction * currentFrameDuration * timeScale / 1000;
         }
-        super.updateAfterCollision(currentFrameDuration);
+        super.updateAfterCollision(currentFrameDuration, timeScale);
     }
+}
+class VoidforgedLevelTransition extends LevelTransitionObject {
 }

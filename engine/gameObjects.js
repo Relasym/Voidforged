@@ -26,6 +26,7 @@ class GameObject {
         //animation Frames
         this.hasAnimation = false;
         this.minWalkAnimationSpeed = 5;
+        this.advanceWalkFrames = 0; //amount of walkframes to advance, set in update(), used in draw()
         //current angle && rotation toggle
         this.rotation = 0;
         this.canRotate = false;
@@ -73,34 +74,42 @@ class GameObject {
         this.isDestroying = true;
         this.level.objectsByFaction[this.faction].delete(this);
     }
-    updateBeforeCollision(currentFrameDuration) {
+    updateBeforeCollision(currentFrameDuration, timeScale) {
         if (this.isDestroying) {
-            this.destructionProgress -= currentFrameDuration / this.destructionTime;
+            this.destructionProgress -= currentFrameDuration * timeScale / this.destructionTime;
         }
         if (this.destructionProgress <= 0) {
             this.deregister();
         }
         if (this.affectedByGravity) {
-            this.velocity.y += this.level
-                .gravity * currentFrameDuration / 1000;
+            this.velocity.y += this.level.gravity * currentFrameDuration * timeScale / 1000;
         }
         this.resetTerrainContact();
     }
-    updateAfterCollision(currentFrameDuration) {
+    updateAfterCollision(currentFrameDuration, timeScale) {
         if (!this.isDestroying || this.movesWhileDestroying) {
             if (vectorLength(this.velocity) > this.maxspeed) {
                 this.velocity = normalizeVector(this.velocity);
                 this.velocity.x *= this.maxspeed;
                 this.velocity.y *= this.maxspeed;
             }
-            this.shape.x += this.velocity.x * currentFrameDuration / 1000;
-            this.shape.y += this.velocity.y * currentFrameDuration / 1000;
+            this.shape.x += this.velocity.x * currentFrameDuration * timeScale / 1000;
+            this.shape.y += this.velocity.y * currentFrameDuration * timeScale / 1000;
+        }
+        if (this.hasAnimation) {
+            if (this.timeInWalkFrame > this.timePerWalkFrame && Math.abs(this.velocity.x) > this.minWalkAnimationSpeed && this.isContactingTerrain.down) {
+                //next frame
+                this.advanceWalkFrames++;
+                this.timeInWalkFrame = 0;
+            }
+            this.timeInWalkFrame += currentFrameDuration;
         }
     }
     distanceTo(object) {
         return vectorLength({ x: this.shape.x - object.shape.x, y: this.shape.y - object.shape.y });
     }
-    draw() {
+    draw(timeScale) {
+        //TODO collect all draw operations into an object
         if (this.type == collisionType.Circle) {
             //todo add images for circle types
             this.level.context.beginPath();
@@ -139,12 +148,11 @@ class GameObject {
             }
             context.translate(-1 * translateX, -1 * translateY);
             if (this.hasAnimation) {
-                if (this.timeInWalkFrame > this.timePerWalkFrame && Math.abs(this.velocity.x) > this.minWalkAnimationSpeed && this.isContactingTerrain.down) {
+                while (this.advanceWalkFrames > 0) {
                     //next frame
+                    this.advanceWalkFrames--;
                     this.currentWalkFrame = (this.currentWalkFrame + 1) % this.walkFrames.length;
-                    this.timeInWalkFrame = 0;
                 }
-                this.timeInWalkFrame += currentFrameDuration;
                 //draw frame
                 this.level.context.drawImage(this.walkFrames[this.currentWalkFrame].image, this.walkFrames[this.currentWalkFrame].imageShape.x, this.walkFrames[this.currentWalkFrame].imageShape.y, this.walkFrames[this.currentWalkFrame].imageShape.width, this.walkFrames[this.currentWalkFrame].imageShape.height, this.shape.x - this.level.camera.x, this.shape.y - this.level.camera.y, this.shape.width, this.shape.height);
             }
@@ -171,18 +179,24 @@ class GameObject {
         this.isContactingTerrain.right = false;
     }
 }
-//what was this even for???
 class Actor extends GameObject {
     constructor(level, shape, type, color) {
         super(level, shape, type, color);
-        this.refireDelay = 1000; //ms
-        this.lastFire = 0;
     }
     register() {
         super.register();
     }
     startDestruction() {
         super.startDestruction();
+    }
+}
+class LevelTransitionObject extends GameObject {
+    constructor(level, shape, type, color) {
+        super(level, shape, type, color);
+    }
+    register() {
+        super.register();
+        this.level.game.levelTransitionMap.set(this.transitionID, this.targetID);
     }
 }
 //basic projectile, not doing much

@@ -45,6 +45,7 @@ function collisionRectangleCircle(rectangle, circle) {
     let dist = Math.sqrt(Math.pow((circle.shape.x - xborder), 2) + Math.pow((circle.shape.y - yborder), 2));
     return (dist <= circle.shape.radius);
 }
+//TODO this doesn't work for rectangles of different sizes since it assumes the coordinates are the center
 function collisionCircleCircle(circle1, circle2) {
     return (vectorLength({ x: circle1.shape.x - circle2.shape.x, y: circle1.shape.y - circle2.shape.y }) <= (circle1.shape.radius + circle2.shape.radius));
 }

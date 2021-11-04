@@ -14,7 +14,6 @@ const simulationFPS = 60; //frames per second
 const simulationFPSArray: number[] = new Array();
 let simulationFPSAverage: number = 0;
 const simulationTPF = 1000 / simulationFPS; //ms
-let currentFrameDuration = 0;
 
 let isPaused: boolean = false;
 
@@ -57,7 +56,7 @@ function logicLoop(): void {
 
     //only process logic if not paused and enough time has passed
     if (!isPaused) {
-        currentFrameDuration = performance.now() - lastFrameTime;
+        let currentFrameDuration = performance.now() - lastFrameTime;
 
         collisionChecks = 0;
         game.update(currentFrameDuration);

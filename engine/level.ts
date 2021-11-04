@@ -4,6 +4,8 @@ type camera = {
 }
 
 class Level {
+    isPaused: boolean;
+    timeScale: number;
     name: String;
     context: CanvasRenderingContext2D;
     player?: PlayerInterface;
@@ -26,7 +28,7 @@ class Level {
     objectsByFaction: Set<GameObjectInterface>[] = [];
     projectilesByFaction: Set<object>[] = [];
 
-    gravity = 300;
+    gravity: number;
 
 
     constructor(context: CanvasRenderingContext2D,owner: Game) {
@@ -38,32 +40,38 @@ class Level {
         }
         this.totalRuntime = 0;
         this.camera = { x: 0, y: 0 };
+        this.isPaused=false;
+        this.timeScale=1.0;
     }
 
-    draw() {
+    draw(timeScale:number) {
+        let effectiveTimeScale=timeScale*this.timeScale;
         if (this.backgroundImage != null) {
             this.context.drawImage(this.game.backgroundImage, 0, 0, canvas.width, canvas.height);
         } else if (this.backgroundColor != null) {
             context.fillStyle = `rgba(${this.backgroundColor.r},${this.backgroundColor.g},${this.backgroundColor.b},${this.backgroundColor.a})`;
             context.fillRect(0, 0, canvas.width, canvas.height);
+        } else {
+            console.warn("Neither Background nor backgroundcolor set");
         }
         this.drawableObjects.forEach((object: GameObjectInterface) => {
-            object.draw();
+            object.draw(effectiveTimeScale);
         });
         if (this.player != null) {
-            this.player.draw();
+            this.player.draw(effectiveTimeScale);
         }
     }
 
-    update(currentFrameDuration: number) {
+    update(currentFrameDuration: number,timeScale:number) {
+        let effectiveTimeScale=timeScale*this.timeScale;
         this.totalRuntime += currentFrameDuration;
 
         this.updateableObjects.forEach((object: GameObjectInterface) => {
-            object.updateBeforeCollision(currentFrameDuration);
+            object.updateBeforeCollision(currentFrameDuration,effectiveTimeScale);
         });
         this.handleCollisions(this.objectsByFaction, this.projectilesByFaction);
         this.updateableObjects.forEach((object: GameObjectInterface) => {
-            object.updateAfterCollision(currentFrameDuration);
+            object.updateAfterCollision(currentFrameDuration,effectiveTimeScale);
         });
 
         if (this.player != null && this.usePlayerCamera) {

@@ -35,9 +35,9 @@ interface GameObjectInterface {
     velocity: { x: any, y: any };
     isDestroying: boolean;
     type: collisionType;
-    draw(): void;
-    updateBeforeCollision(currentFrameDuration: number): void;
-    updateAfterCollision(currentFrameDuration: number): void;
+    draw(timeScale: number): void;
+    updateBeforeCollision(currentFrameDuration: number, timeScale: number): void;
+    updateAfterCollision(currentFrameDuration: number, timeScale: number): void;
 }
 
 //basic object, includes register/deregister and destruction
@@ -68,6 +68,7 @@ class GameObject implements GameObjectInterface {
     destructionProgress = 1.0; //destroys object if it reaches 0, used as a multiplier for color alpha
     movesWhileDestroying = false;
 
+
     //image to be drawn
     image: HTMLImageElement;
     imageShape: shape;
@@ -80,6 +81,7 @@ class GameObject implements GameObjectInterface {
     timeInWalkFrame: number;
     currentWalkFrame: number; //index in walkFrames array
     minWalkAnimationSpeed = 5;
+    advanceWalkFrames = 0; //amount of walkframes to advance, set in update(), used in draw()
 
     //current angle && rotation toggle
     rotation = 0;
@@ -118,7 +120,7 @@ class GameObject implements GameObjectInterface {
             this.level.drawableObjects.add(this)
         }
         if (this.isUpdateable) {
-            this.level .updateableObjects.add(this)
+            this.level.updateableObjects.add(this)
         }
         this.level.objectsByFaction[this.faction].add(this);
     }
@@ -139,28 +141,35 @@ class GameObject implements GameObjectInterface {
         this.level.objectsByFaction[this.faction].delete(this);
     }
 
-    updateBeforeCollision(currentFrameDuration: number): void {
+    updateBeforeCollision(currentFrameDuration: number, timeScale: number): void {
         if (this.isDestroying) {
-            this.destructionProgress -= currentFrameDuration / this.destructionTime;
+            this.destructionProgress -= currentFrameDuration * timeScale / this.destructionTime;
         }
         if (this.destructionProgress <= 0) {
             this.deregister();
         }
         if (this.affectedByGravity) {
-            this.velocity.y += this.level
-                .gravity * currentFrameDuration / 1000;
+            this.velocity.y += this.level.gravity * currentFrameDuration * timeScale / 1000;
         }
         this.resetTerrainContact();
     }
-    updateAfterCollision(currentFrameDuration: number): void {
+    updateAfterCollision(currentFrameDuration: number, timeScale: number): void {
         if (!this.isDestroying || this.movesWhileDestroying) {
             if (vectorLength(this.velocity) > this.maxspeed) {
                 this.velocity = normalizeVector(this.velocity);
                 this.velocity.x *= this.maxspeed;
                 this.velocity.y *= this.maxspeed;
             }
-            this.shape.x += this.velocity.x * currentFrameDuration / 1000;
-            this.shape.y += this.velocity.y * currentFrameDuration / 1000;
+            this.shape.x += this.velocity.x * currentFrameDuration * timeScale / 1000;
+            this.shape.y += this.velocity.y * currentFrameDuration * timeScale / 1000;
+        }
+        if (this.hasAnimation) {
+            if (this.timeInWalkFrame > this.timePerWalkFrame && Math.abs(this.velocity.x) > this.minWalkAnimationSpeed && this.isContactingTerrain.down) {
+                //next frame
+                this.advanceWalkFrames++;
+                this.timeInWalkFrame = 0;
+            }
+            this.timeInWalkFrame += currentFrameDuration;
         }
     }
 
@@ -168,7 +177,8 @@ class GameObject implements GameObjectInterface {
         return vectorLength({ x: this.shape.x - object.shape.x, y: this.shape.y - object.shape.y })
     }
 
-    draw(): void {
+    draw(timeScale: number): void {
+        //TODO collect all draw operations into an object
         if (this.type == collisionType.Circle) {
             //todo add images for circle types
             this.level.context.beginPath();
@@ -211,12 +221,11 @@ class GameObject implements GameObjectInterface {
             context.translate(-1 * translateX, -1 * translateY);
 
             if (this.hasAnimation) {
-                if (this.timeInWalkFrame > this.timePerWalkFrame && Math.abs(this.velocity.x) > this.minWalkAnimationSpeed && this.isContactingTerrain.down) {
+               while(this.advanceWalkFrames>0) {
                     //next frame
+                    this.advanceWalkFrames--;
                     this.currentWalkFrame = (this.currentWalkFrame + 1) % this.walkFrames.length;
-                    this.timeInWalkFrame = 0;
                 }
-                this.timeInWalkFrame += currentFrameDuration;
                 //draw frame
                 this.level.context.drawImage(
                     this.walkFrames[this.currentWalkFrame].image,
@@ -269,10 +278,10 @@ class GameObject implements GameObjectInterface {
     }
 }
 
-//what was this even for???
 class Actor extends GameObject {
-    refireDelay = 1000; //ms
-    lastFire = 0;
+    hitpoints: number;
+    damage: number;
+
 
     constructor(level: Level, shape: shape, type: collisionType, color: color) {
         super(level, shape, type, color);
@@ -282,6 +291,20 @@ class Actor extends GameObject {
     }
     startDestruction(): void {
         super.startDestruction();
+    }
+
+}
+
+class LevelTransitionObject extends GameObject {
+    transitionID: String;
+    targetID: String;
+
+    constructor(level: Level, shape: shape, type: collisionType, color: color) {
+        super(level, shape, type, color);
+    }
+    register() {
+        super.register();
+        this.level.game.levelTransitionMap.set(this.transitionID, this.targetID);
     }
 
 }
@@ -304,6 +327,8 @@ class Projectile extends GameObject {
     }
 }
 
+
+//???
 interface PlayerInterface extends GameObjectInterface {
 
 }

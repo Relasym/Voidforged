@@ -7,7 +7,6 @@ const simulationFPS = 60; //frames per second
 const simulationFPSArray = new Array();
 let simulationFPSAverage = 0;
 const simulationTPF = 1000 / simulationFPS; //ms
-let currentFrameDuration = 0;
 let isPaused = false;
 const pauseButton = document.getElementsByClassName("pausebutton").item(0);
 const pauseMenu = document.getElementsByClassName("pausemenu").item(0);
@@ -39,7 +38,7 @@ function logicLoop() {
     setTimeout(logicLoop, 0);
     //only process logic if not paused and enough time has passed
     if (!isPaused) {
-        currentFrameDuration = performance.now() - lastFrameTime;
+        let currentFrameDuration = performance.now() - lastFrameTime;
         collisionChecks = 0;
         game.update(currentFrameDuration);
         if (simulationFPSArray.length == 60) {

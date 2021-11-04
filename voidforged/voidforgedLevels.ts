@@ -77,6 +77,13 @@ class VoidforgedEmptyLevel extends Level {
         newBlock.register()
     }
 
+    createLevelTransitionBlock(x: number, y: number) {
+        let levelTransition = new VoidforgedLevelTransition(this,{x:x,y:y,width:64,height:128},collisionType.Rectangle, { r: 255, g: 255, b: 0, a: 1 });
+        levelTransition.faction=0;
+        levelTransition.register();
+
+    }
+
     handleCollisions(objectsByFaction: any, projectilesByFaction: any): void {
         /*
         TODO
@@ -220,6 +227,7 @@ class VoidforgedLevelLeft extends VoidforgedEmptyLevel {
         this.createWallBlock(blocksize*2,canvas.height-4*blocksize);
         this.createWallBlock(blocksize*2,canvas.height-3*blocksize);
         this.createWallBlock(blocksize*3,canvas.height-3*blocksize);
+        this.createLevelTransitionBlock(blocksize*10,canvas.height-4*blocksize);
 
     }
 }
@@ -235,12 +243,18 @@ class VoidforgedLevelRight extends VoidforgedEmptyLevel {
             this.createWallBlock(blocksize*i,canvas.height-2*blocksize);
         }
 
-        this.createWallBlock(blocksize*9,canvas.height-5*blocksize);
+        this.createWallBlock(blocksize*10,canvas.height-5*blocksize);
+        this.createWallBlock(blocksize*10,canvas.height-4*blocksize);
+        this.createWallBlock(blocksize*10,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*10,canvas.height-6*blocksize);
         this.createWallBlock(blocksize*9,canvas.height-4*blocksize);
         this.createWallBlock(blocksize*9,canvas.height-3*blocksize);
-        this.createWallBlock(blocksize*8,canvas.height-4*blocksize);
+        this.createWallBlock(blocksize*9,canvas.height-5*blocksize);
         this.createWallBlock(blocksize*8,canvas.height-3*blocksize);
+        this.createWallBlock(blocksize*8,canvas.height-4*blocksize);
         this.createWallBlock(blocksize*7,canvas.height-3*blocksize);
+        this.createLevelTransitionBlock(blocksize*1,canvas.height-4*blocksize);
 
+ 
     }
 }
