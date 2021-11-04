@@ -1,4 +1,5 @@
 class Game {
+    context: CanvasRenderingContext2D;
     isPaused: boolean;
     timeScale: number;
     backgroundImage: HTMLImageElement;
@@ -16,8 +17,11 @@ class Game {
     lastdrawFrame: number;
     logicFPS:number;
     logicFrameTimeArray: number[];
+    statDisplayName: string[];
+    statDisplayValue: string[]
 
-    constructor() {
+    constructor(context: CanvasRenderingContext2D) {
+        this.context=context;
         this.levels = new Array();
         this.backgroundImage = new Image();
         this.levelTransitionMap = new Map();
@@ -26,7 +30,10 @@ class Game {
         this.timeScale=1.0;
         this.logicFrameTimeArray=new Array();
         this.drawFrameTimeArray= new Array();
+        this.statDisplayName=[];
+        this.statDisplayValue=[];
         this.lastdrawFrame=performance.now();
+        this.initializeStats();
     }
 
     createLevels(levels: JSON) {
@@ -57,6 +64,7 @@ class Game {
         this.lastdrawFrame=currentTime;
 
         this.currentLevel.draw();
+        this.drawStats();
     }
     start(){
 
@@ -66,4 +74,21 @@ class Game {
         this.targetLevel = this.startingLevel;
 
     }
+    initializeStats() {
+        this.statDisplayName.push("Draw FPS: ");
+        this.statDisplayName.push("Logic FPS: ");
+    }
+        
+    drawStats() { 
+        let xOffset=100;
+        let yOffset=100;
+        let ySize=20;
+        this.statDisplayValue[0]=Math.round(this.drawFPS).toString();
+        this.statDisplayValue[1]=Math.round(this.logicFPS).toString();
+        for(let i = 0; i<this.statDisplayName.length;i++) {
+            context.fillStyle="white";
+            context.font="20px Arial";
+            context.fillText(this.statDisplayName[i] + this.statDisplayValue[i],xOffset,yOffset+i*ySize);
+        }
+       }
 }

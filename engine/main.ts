@@ -23,30 +23,14 @@ let collisionChecks: number = 0;
 
 let lastFrameTime = 0;
 let totalRuntime = 0;
-let statDisplayName: HTMLElement[] = new Array(10);
-let statDisplayValue: HTMLElement[] = new Array(10);
 
 let currentFrame = 0;  // last calculated frame, incremented by game logic
 let lastDrawnFrame = 0; // last drawn frame, incremented by draw loop
 
 function start(): void {
     //html stat display, static part
-    for(let i = 1;i<=10;i++) {
-        statDisplayName[i]=document.getElementById(`type${i}`);
-        statDisplayValue[i]=document.getElementById(`value${i}`);
-    }
-    statDisplayName[1].textContent = "allObjects: ";
-    statDisplayName[2].textContent = "drawableObjects: ";
-    statDisplayName[3].textContent = "updateableObjects: ";
-    statDisplayName[4].textContent = "";
-    statDisplayName[5].textContent = "";
-    statDisplayName[6].textContent = "collisionChecks: ";
-    statDisplayName[7].textContent = "";
-    statDisplayName[8].textContent = "Player Speed: ";
-    statDisplayName[9].textContent = "Draw FPS: ";
-    statDisplayName[10].textContent = "Logic FPS: ";
 
-    game= new VoidforgedGame();
+    game= new VoidforgedGame(context);
 
     //unpause and start Game
     togglePause();
@@ -84,22 +68,6 @@ function drawLoop(): void {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         game.draw();
-
-        //update stats
-        // document.getElementById("value1").textContent = allObjects.length.toString();
-        // document.getElementById("value2").textContent = levels[currentLevel].drawableObjects.size.toString();
-        // document.getElementById("value3").textContent = levels[currentLevel].updateableObjects.size.toString();
-        // document.getElementById("value4").textContent = levels[currentLevel].objectsByFaction[2].size.toString();
-        // document.getElementById("value5").textContent = levels[currentLevel].objectsByFaction[3].size.toString();
-        // document.getElementById("value7").textContent = collisionChecks.toString();
-        // if (levels[currentLevel].player != null) {
-        //     document.getElementById("value8").textContent = Math.round(vectorLength(levels[currentLevel].player.velocity)).toString();
-        // }
-        // document.getElementById("value10").textContent = performance.now() - lastFrameTime + "ms";
-        statDisplayValue[9].textContent = Math.round(game.drawFPS).toString();
-        statDisplayValue[10].textContent = Math.round(game.logicFPS).toString();
-
-
     }
 
 }
@@ -111,7 +79,6 @@ function normalizeVector(vector: vector): vector {
     let length = vectorLength(vector);
     return { x: vector.x / length, y: vector.y / length };
 }
-
 
 /* storing currently pressed buttons */
 document.addEventListener('keydown', (keypress) => {

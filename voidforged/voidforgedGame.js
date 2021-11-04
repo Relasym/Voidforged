@@ -1,6 +1,6 @@
 class VoidforgedGame extends Game {
-    constructor() {
-        super();
+    constructor(context) {
+        super(context);
         //Background Image
         this.backgroundImage.src = "img\\Backgrounds\\Background cave2.png";
         //Level Blocks
@@ -60,7 +60,7 @@ class VoidforgedGame extends Game {
         this.restart();
     }
     restart() {
-        let level = new VoidforgedLevelLeft(context, this);
+        let level = new VoidforgedLevelLeft(this.context, this);
         this.levels.push(level);
         this.currentLevel = level;
     }
