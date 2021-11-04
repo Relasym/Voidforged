@@ -6,7 +6,7 @@ type camera = {
 class Level {
     isPaused: boolean;
     timeScale: number;
-    name: String;
+    name: string;
     context: CanvasRenderingContext2D;
     player?: PlayerInterface;
     camera?: camera;
@@ -44,8 +44,8 @@ class Level {
         this.timeScale=1.0;
     }
 
-    draw(timeScale:number) {
-        let effectiveTimeScale=timeScale*this.timeScale;
+    
+    draw() {
         if (this.backgroundImage != null) {
             this.context.drawImage(this.game.backgroundImage, 0, 0, canvas.width, canvas.height);
         } else if (this.backgroundColor != null) {
@@ -55,10 +55,10 @@ class Level {
             console.warn("Neither Background nor backgroundcolor set");
         }
         this.drawableObjects.forEach((object: GameObjectInterface) => {
-            object.draw(effectiveTimeScale);
+            object.draw();
         });
         if (this.player != null) {
-            this.player.draw(effectiveTimeScale);
+            this.player.draw();
         }
     }
 

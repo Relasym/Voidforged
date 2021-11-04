@@ -19,8 +19,7 @@ class Level {
         this.isPaused = false;
         this.timeScale = 1.0;
     }
-    draw(timeScale) {
-        let effectiveTimeScale = timeScale * this.timeScale;
+    draw() {
         if (this.backgroundImage != null) {
             this.context.drawImage(this.game.backgroundImage, 0, 0, canvas.width, canvas.height);
         }
@@ -32,10 +31,10 @@ class Level {
             console.warn("Neither Background nor backgroundcolor set");
         }
         this.drawableObjects.forEach((object) => {
-            object.draw(effectiveTimeScale);
+            object.draw();
         });
         if (this.player != null) {
-            this.player.draw(effectiveTimeScale);
+            this.player.draw();
         }
     }
     update(currentFrameDuration, timeScale) {

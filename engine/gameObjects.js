@@ -102,13 +102,13 @@ class GameObject {
                 this.advanceWalkFrames++;
                 this.timeInWalkFrame = 0;
             }
-            this.timeInWalkFrame += currentFrameDuration;
+            this.timeInWalkFrame += currentFrameDuration * timeScale;
         }
     }
     distanceTo(object) {
         return vectorLength({ x: this.shape.x - object.shape.x, y: this.shape.y - object.shape.y });
     }
-    draw(timeScale) {
+    draw() {
         //TODO collect all draw operations into an object
         if (this.type == collisionType.Circle) {
             //todo add images for circle types

@@ -58,9 +58,6 @@ class VoidforgedEmptyLevel extends Level {
         }
 
        
-
-
-
     }
 
     createWallBlock(x: number, y: number) {

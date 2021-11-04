@@ -4,8 +4,7 @@ const startTime = performance.now();
 const currentInputs = new Set();
 let game;
 const simulationFPS = 60; //frames per second
-const simulationFPSArray = new Array();
-let simulationFPSAverage = 0;
+const logicFPSArray = new Array();
 const simulationTPF = 1000 / simulationFPS; //ms
 let isPaused = false;
 const pauseButton = document.getElementsByClassName("pausebutton").item(0);
@@ -25,8 +24,8 @@ function start() {
     document.getElementById("type6").textContent = "collisionChecks: ";
     document.getElementById("type7").textContent = "";
     document.getElementById("type8").textContent = "Player Speed: ";
-    document.getElementById("type9").textContent = "";
-    document.getElementById("type10").textContent = "Frametime: ";
+    document.getElementById("type9").textContent = "Draw FPS: ";
+    document.getElementById("type10").textContent = "Logic FPS: ";
     game = new VoidforgedGame();
     //unpause and start Game
     togglePause();
@@ -41,11 +40,6 @@ function logicLoop() {
         let currentFrameDuration = performance.now() - lastFrameTime;
         collisionChecks = 0;
         game.update(currentFrameDuration);
-        if (simulationFPSArray.length == 60) {
-            simulationFPSArray.shift();
-        }
-        simulationFPSArray.push(currentFrameDuration);
-        simulationFPSAverage = simulationFPSArray.reduce((a, b) => a + b) / simulationFPSArray.length;
         currentFrame++;
         lastFrameTime = performance.now();
     }
@@ -69,7 +63,8 @@ function drawLoop() {
         //     document.getElementById("value8").textContent = Math.round(vectorLength(levels[currentLevel].player.velocity)).toString();
         // }
         // document.getElementById("value10").textContent = performance.now() - lastFrameTime + "ms";
-        document.getElementById("value10").textContent = Math.round(simulationFPSAverage).toString();
+        document.getElementById("value9").textContent = Math.round(game.drawFPS).toString();
+        document.getElementById("value10").textContent = Math.round(game.logicFPS).toString();
     }
 }
 function vectorLength(vector) {

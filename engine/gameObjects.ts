@@ -35,7 +35,7 @@ interface GameObjectInterface {
     velocity: { x: any, y: any };
     isDestroying: boolean;
     type: collisionType;
-    draw(timeScale: number): void;
+    draw(): void;
     updateBeforeCollision(currentFrameDuration: number, timeScale: number): void;
     updateAfterCollision(currentFrameDuration: number, timeScale: number): void;
 }
@@ -169,7 +169,7 @@ class GameObject implements GameObjectInterface {
                 this.advanceWalkFrames++;
                 this.timeInWalkFrame = 0;
             }
-            this.timeInWalkFrame += currentFrameDuration;
+            this.timeInWalkFrame += currentFrameDuration*timeScale;
         }
     }
 
@@ -177,7 +177,7 @@ class GameObject implements GameObjectInterface {
         return vectorLength({ x: this.shape.x - object.shape.x, y: this.shape.y - object.shape.y })
     }
 
-    draw(timeScale: number): void {
+    draw(): void {
         //TODO collect all draw operations into an object
         if (this.type == collisionType.Circle) {
             //todo add images for circle types
@@ -282,7 +282,6 @@ class Actor extends GameObject {
     hitpoints: number;
     damage: number;
 
-
     constructor(level: Level, shape: shape, type: collisionType, color: color) {
         super(level, shape, type, color);
     }
@@ -296,8 +295,8 @@ class Actor extends GameObject {
 }
 
 class LevelTransitionObject extends GameObject {
-    transitionID: String;
-    targetID: String;
+    transitionID: string;
+    targetID: string;
 
     constructor(level: Level, shape: shape, type: collisionType, color: color) {
         super(level, shape, type, color);
