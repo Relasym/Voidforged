@@ -71,6 +71,7 @@ class GameObject implements GameObjectInterface {
 
     //image to be drawn
     image: HTMLImageElement;
+    imageIsSet= false;
     imageShape: shape;
     imageDirection: imageDirection;
 
@@ -209,7 +210,7 @@ class GameObject implements GameObjectInterface {
             if (this.canRotate) {
                 context.rotate(this.rotation);
             }
-            if (this.image.src != "" && this.imageDirection == undefined && this.canRotate == false) {
+            if (this.imageIsSet && this.imageDirection == undefined && this.canRotate == false) {
                 console.warn("Image Direction undefined in unrotateable Object:");
                 console.warn(this);
             }
@@ -239,7 +240,7 @@ class GameObject implements GameObjectInterface {
                     this.shape.height);
 
             } else {
-                if (this.image.src == "") {
+                if (!this.imageIsSet) {
                     context.fillRect(this.shape.x - this.level.camera.x,
                         this.shape.y - this.level.camera.y,
                         this.shape.width,
@@ -275,6 +276,11 @@ class GameObject implements GameObjectInterface {
         this.isContactingTerrain.left = false;
         this.isContactingTerrain.down = false;
         this.isContactingTerrain.right = false;
+    }
+
+    setImage(image: HTMLImageElement){
+        this.image=image;
+        this.imageIsSet=true;
     }
 }
 

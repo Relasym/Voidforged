@@ -12,20 +12,26 @@ const pauseMenu = document.getElementsByClassName("pausemenu").item(0);
 let collisionChecks = 0;
 let lastFrameTime = 0;
 let totalRuntime = 0;
+let statDisplayName = new Array(10);
+let statDisplayValue = new Array(10);
 let currentFrame = 0; // last calculated frame, incremented by game logic
 let lastDrawnFrame = 0; // last drawn frame, incremented by draw loop
 function start() {
     //html stat display, static part
-    document.getElementById("type1").textContent = "allObjects: ";
-    document.getElementById("type2").textContent = "drawableObjects: ";
-    document.getElementById("type3").textContent = "updateableObjects: ";
-    document.getElementById("type4").textContent = "";
-    document.getElementById("type5").textContent = "";
-    document.getElementById("type6").textContent = "collisionChecks: ";
-    document.getElementById("type7").textContent = "";
-    document.getElementById("type8").textContent = "Player Speed: ";
-    document.getElementById("type9").textContent = "Draw FPS: ";
-    document.getElementById("type10").textContent = "Logic FPS: ";
+    for (let i = 1; i <= 10; i++) {
+        statDisplayName[i] = document.getElementById(`type${i}`);
+        statDisplayValue[i] = document.getElementById(`value${i}`);
+    }
+    statDisplayName[1].textContent = "allObjects: ";
+    statDisplayName[2].textContent = "drawableObjects: ";
+    statDisplayName[3].textContent = "updateableObjects: ";
+    statDisplayName[4].textContent = "";
+    statDisplayName[5].textContent = "";
+    statDisplayName[6].textContent = "collisionChecks: ";
+    statDisplayName[7].textContent = "";
+    statDisplayName[8].textContent = "Player Speed: ";
+    statDisplayName[9].textContent = "Draw FPS: ";
+    statDisplayName[10].textContent = "Logic FPS: ";
     game = new VoidforgedGame();
     //unpause and start Game
     togglePause();
@@ -63,8 +69,8 @@ function drawLoop() {
         //     document.getElementById("value8").textContent = Math.round(vectorLength(levels[currentLevel].player.velocity)).toString();
         // }
         // document.getElementById("value10").textContent = performance.now() - lastFrameTime + "ms";
-        document.getElementById("value9").textContent = Math.round(game.drawFPS).toString();
-        document.getElementById("value10").textContent = Math.round(game.logicFPS).toString();
+        statDisplayValue[9].textContent = Math.round(game.drawFPS).toString();
+        statDisplayValue[10].textContent = Math.round(game.logicFPS).toString();
     }
 }
 function vectorLength(vector) {

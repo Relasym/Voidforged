@@ -23,6 +23,7 @@ class GameObject {
         this.destructionTime = 300; //ms
         this.destructionProgress = 1.0; //destroys object if it reaches 0, used as a multiplier for color alpha
         this.movesWhileDestroying = false;
+        this.imageIsSet = false;
         //animation Frames
         this.hasAnimation = false;
         this.minWalkAnimationSpeed = 5;
@@ -137,7 +138,7 @@ class GameObject {
             if (this.canRotate) {
                 context.rotate(this.rotation);
             }
-            if (this.image.src != "" && this.imageDirection == undefined && this.canRotate == false) {
+            if (this.imageIsSet && this.imageDirection == undefined && this.canRotate == false) {
                 console.warn("Image Direction undefined in unrotateable Object:");
                 console.warn(this);
             }
@@ -157,7 +158,7 @@ class GameObject {
                 this.level.context.drawImage(this.walkFrames[this.currentWalkFrame].image, this.walkFrames[this.currentWalkFrame].imageShape.x, this.walkFrames[this.currentWalkFrame].imageShape.y, this.walkFrames[this.currentWalkFrame].imageShape.width, this.walkFrames[this.currentWalkFrame].imageShape.height, this.shape.x - this.level.camera.x, this.shape.y - this.level.camera.y, this.shape.width, this.shape.height);
             }
             else {
-                if (this.image.src == "") {
+                if (!this.imageIsSet) {
                     context.fillRect(this.shape.x - this.level.camera.x, this.shape.y - this.level.camera.y, this.shape.width, this.shape.height);
                 }
                 else {
@@ -177,6 +178,10 @@ class GameObject {
         this.isContactingTerrain.left = false;
         this.isContactingTerrain.down = false;
         this.isContactingTerrain.right = false;
+    }
+    setImage(image) {
+        this.image = image;
+        this.imageIsSet = true;
     }
 }
 class Actor extends GameObject {

@@ -63,13 +63,13 @@ class VoidforgedEmptyLevel extends Level {
     createWallBlock(x: number, y: number) {
         let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
         let block = Math.random() * this.game.wallBlockNew.length
-        newBlock.image = this.game.wallBlockNew[Math.floor(block)];
+        newBlock.setImage( this.game.wallBlockNew[Math.floor(block)]);
         newBlock.faction = 0;
         newBlock.register()
     }
     createFillerBlock(x: number, y: number) {
         let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
-        newBlock.image = this.game.caveWallBlock;
+        newBlock.setImage(this.game.caveWallBlock);
         newBlock.faction = 0;
         newBlock.register()
     }

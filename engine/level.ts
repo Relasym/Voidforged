@@ -3,6 +3,15 @@ type camera = {
     y: number;
 }
 
+type jsonLevel = {
+    name:string;
+    objects: jsonGameObject[];
+}
+
+type jsonGameObject = {
+
+}
+
 class Level {
     isPaused: boolean;
     timeScale: number;
@@ -44,7 +53,12 @@ class Level {
         this.timeScale=1.0;
     }
 
-    
+    loadFromJSON(json:jsonLevel) {
+        this.name=json.name;
+
+    }
+
+
     draw() {
         if (this.backgroundImage != null) {
             this.context.drawImage(this.game.backgroundImage, 0, 0, canvas.width, canvas.height);

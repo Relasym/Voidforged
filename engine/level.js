@@ -19,6 +19,9 @@ class Level {
         this.isPaused = false;
         this.timeScale = 1.0;
     }
+    loadFromJSON(json) {
+        this.name = json.name;
+    }
     draw() {
         if (this.backgroundImage != null) {
             this.context.drawImage(this.game.backgroundImage, 0, 0, canvas.width, canvas.height);
