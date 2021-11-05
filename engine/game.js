@@ -18,17 +18,21 @@ class Game {
         //TODO create levels from JSON here
     }
     loadLevel(id) {
-        this.currentLevel = this.levels[id];
+        let newlevel = this.levels[id];
+        newlevel.player.velocity = this.currentLevel.player.velocity;
+        this.currentLevel = newlevel;
     }
     update(currentFrameDuration) {
-        if (this.logicFrameTimeArray.length == 60) {
-            this.logicFrameTimeArray.shift();
+        if (!this.isPaused) {
+            if (this.logicFrameTimeArray.length == 60) {
+                this.logicFrameTimeArray.shift();
+            }
+            this.logicFrameTimeArray.push(currentFrameDuration);
+            let averageFrameTime = this.logicFrameTimeArray.reduce((a, b) => a + b) / this.logicFrameTimeArray.length;
+            this.logicFPS = 1000 / averageFrameTime;
+            //TODO compare currentlevel and and targetlevel, start switch if not equal
+            this.currentLevel.update(currentFrameDuration, this.timeScale);
         }
-        this.logicFrameTimeArray.push(currentFrameDuration);
-        let averageFrameTime = this.logicFrameTimeArray.reduce((a, b) => a + b) / this.logicFrameTimeArray.length;
-        this.logicFPS = 1000 / averageFrameTime;
-        //TODO compare currentlevel and and targetlevel, start switch if not equal
-        this.currentLevel.update(currentFrameDuration, this.timeScale);
     }
     draw() {
         let currentTime = performance.now();

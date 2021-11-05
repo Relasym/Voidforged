@@ -11,36 +11,6 @@ class VoidforgedEmptyLevel extends Level {
     }
 
     start() {
-
-        //sprite test
-        // let images: HTMLImageElement[] = new Array();
-        // for (let image of this.game.wallBlock) {
-        //     images.push(image);
-        // }
-        // for (let image of this.game.wallBlockNew) {
-        //     images.push(image);
-        // }
-        // images.push(this.game.caveWallBlock);
-        // images.push(this.game.groundFlat);
-        // images.push(this.game.groundSlanted);
-        // images.push(this.game.platformMid);
-        // images.push(this.game.platformEnd);
-        // for (let image of this.game.characterSpritesWalk) {
-        //     images.push(image);
-        // }
-        // for (let image of this.game.characterSpritesTurn) {
-        //     images.push(image);
-        // }
-        // let xCoord = 0;
-        // let yCoord = 0;
-        // for (let image of images) {
-        //     let newObject = new VoidforgedObject(this, { x: xCoord, y: yCoord, width: 32, height: 32 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
-        //     newObject.image = image;
-        //     xCoord += 32;
-        //     newObject.faction = 0;
-        //     newObject.register();
-        // }
-
         //player
         let player = new VoidforgedPlayer(this, { x: 100, y: 100, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
         player.register();

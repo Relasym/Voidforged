@@ -77,27 +77,27 @@ class Level {
     }
 
     update(currentFrameDuration: number,timeScale:number) {
-        let effectiveTimeScale=timeScale*this.timeScale;
-        this.totalRuntime += currentFrameDuration;
-
-        this.updateableObjects.forEach((object: GameObjectInterface) => {
-            object.updateBeforeCollision(currentFrameDuration,effectiveTimeScale);
-        });
-        this.handleCollisions(this.objectsByFaction, this.projectilesByFaction);
-        this.updateableObjects.forEach((object: GameObjectInterface) => {
-            object.updateAfterCollision(currentFrameDuration,effectiveTimeScale);
-        });
-
-        if (this.player != null && this.usePlayerCamera) {
-            this.camera.x = this.player.shape.x - 400 + this.player.shape.width / 2;
-            this.camera.y = this.player.shape.y - 300 + this.player.shape.height / 2;
+        if(!this.isPaused) {
+            let effectiveTimeScale=timeScale*this.timeScale;
+            this.totalRuntime += currentFrameDuration;
+    
+            this.updateableObjects.forEach((object: GameObjectInterface) => {
+                object.updateBeforeCollision(currentFrameDuration,effectiveTimeScale);
+            });
+            this.handleCollisions(this.objectsByFaction, this.projectilesByFaction);
+            this.updateableObjects.forEach((object: GameObjectInterface) => {
+                object.updateAfterCollision(currentFrameDuration,effectiveTimeScale);
+            });
+    
+            if (this.player != null && this.usePlayerCamera) {
+                this.camera.x = this.player.shape.x - 400 + this.player.shape.width / 2;
+                this.camera.y = this.player.shape.y - 300 + this.player.shape.height / 2;
+            }
         }
-
     }
 
     start() {
         totalRuntime = 0;
-
     }
 
     end() { }
