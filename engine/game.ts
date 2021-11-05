@@ -40,6 +40,10 @@ class Game {
         //TODO create levels from JSON here
     }
 
+    loadLevel(id:number) {
+        this.currentLevel=this.levels[id];
+    }
+
     update(currentFrameDuration: number) {
         if (this.logicFrameTimeArray.length == 60) {
             this.logicFrameTimeArray.shift();

@@ -46,7 +46,7 @@ class VoidforgedGame extends Game {
             this.characterSpritesWalk.push(new Image());
             this.characterSpritesWalk[i].src = characterSpritesWalkSrc[i];
         }
-        this.characterSpritesWalk.reverse();
+        this.characterSpritesWalk.reverse(); //current images are in the wrong order
         //turn
         let characterSpritesTurnSrc = new Array();
         characterSpritesTurnSrc.push("img\\Sprites\\1Character cheap2 side new.png");
@@ -63,5 +63,7 @@ class VoidforgedGame extends Game {
         let level = new VoidforgedLevelLeft(this.context, this);
         this.levels.push(level);
         this.currentLevel = level;
+        level = new VoidforgedLevelRight(this.context, this);
+        this.levels.push(level);
     }
 }

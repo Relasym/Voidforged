@@ -201,7 +201,7 @@ class LevelTransitionObject extends GameObject {
     }
     register() {
         super.register();
-        this.level.game.levelTransitionMap.set(this.transitionID, this.targetID);
+        // this.level.game.levelTransitionMap.set(this.transitionID, this.targetID);
     }
 }
 //basic projectile, not doing much

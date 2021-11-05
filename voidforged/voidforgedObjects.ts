@@ -78,5 +78,8 @@ class VoidforgedPlayer extends GameObject {
 }
 
 class VoidforgedLevelTransition extends LevelTransitionObject {
-
+    constructor(owner: VoidforgedEmptyLevel, shape: shape, type: collisionType, color: color) {
+        super(owner, shape, type, color);
+        this.faction = 0;
+    }
 }

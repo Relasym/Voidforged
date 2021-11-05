@@ -302,14 +302,14 @@ class Actor extends GameObject {
 
 class LevelTransitionObject extends GameObject {
     transitionID: string;
-    targetID: string;
+    targetID: number;
 
     constructor(level: Level, shape: shape, type: collisionType, color: color) {
         super(level, shape, type, color);
     }
     register() {
         super.register();
-        this.level.game.levelTransitionMap.set(this.transitionID, this.targetID);
+        // this.level.game.levelTransitionMap.set(this.transitionID, this.targetID);
     }
 
 }

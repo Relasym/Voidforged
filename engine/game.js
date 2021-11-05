@@ -17,6 +17,9 @@ class Game {
     createLevels(levels) {
         //TODO create levels from JSON here
     }
+    loadLevel(id) {
+        this.currentLevel = this.levels[id];
+    }
     update(currentFrameDuration) {
         if (this.logicFrameTimeArray.length == 60) {
             this.logicFrameTimeArray.shift();

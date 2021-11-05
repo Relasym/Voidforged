@@ -64,9 +64,10 @@ class VoidforgedEmptyLevel extends Level {
         newBlock.faction = 0;
         newBlock.register();
     }
-    createLevelTransitionBlock(x, y) {
+    createLevelTransitionBlock(x, y, target) {
         let levelTransition = new VoidforgedLevelTransition(this, { x: x, y: y, width: 64, height: 128 }, collisionType.Rectangle, { r: 255, g: 255, b: 0, a: 1 });
         levelTransition.faction = 0;
+        levelTransition.targetID = target;
         levelTransition.register();
     }
     handleCollisions(objectsByFaction, projectilesByFaction) {
@@ -138,6 +139,11 @@ class VoidforgedEmptyLevel extends Level {
                 for (let object2 of objectsByFaction[0]) {
                     if (object1.hasCollision && object2.hasCollision && areObjectsColliding(object1, object2)) {
                         // object1.velocity = { x: 0, y: 0 };
+                        if (object2.constructor.name == "VoidforgedLevelTransition") {
+                            object2.level.game.loadLevel(object2.targetID);
+                            console.log("Level transition");
+                            console.log(this.game.levels);
+                        }
                         //push object out instead
                         let distances = new Array();
                         distances.push(object1.shape.x + object1.shape.width - object2.shape.x);
@@ -196,7 +202,7 @@ class VoidforgedLevelLeft extends VoidforgedEmptyLevel {
         this.createWallBlock(blocksize * 2, canvas.height - 4 * blocksize);
         this.createWallBlock(blocksize * 2, canvas.height - 3 * blocksize);
         this.createWallBlock(blocksize * 3, canvas.height - 3 * blocksize);
-        this.createLevelTransitionBlock(blocksize * 10, canvas.height - 4 * blocksize);
+        this.createLevelTransitionBlock(blocksize * 10, canvas.height - 4 * blocksize, 1);
     }
 }
 class VoidforgedLevelRight extends VoidforgedEmptyLevel {
@@ -217,6 +223,6 @@ class VoidforgedLevelRight extends VoidforgedEmptyLevel {
         this.createWallBlock(blocksize * 8, canvas.height - 3 * blocksize);
         this.createWallBlock(blocksize * 8, canvas.height - 4 * blocksize);
         this.createWallBlock(blocksize * 7, canvas.height - 3 * blocksize);
-        this.createLevelTransitionBlock(blocksize * 1, canvas.height - 4 * blocksize);
+        this.createLevelTransitionBlock(blocksize * 1, canvas.height - 4 * blocksize, 0);
     }
 }

@@ -164,5 +164,5 @@ window.addEventListener('load', (event) => {
     start();
 });
 
-//pause game if windows is unfocused to prevent large simulation ticks
+//pause game if window is unfocused to prevent large simulation ticks
 window.onblur=()=>togglePause();
