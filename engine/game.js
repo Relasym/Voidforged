@@ -15,7 +15,8 @@ class Game {
         this.initializeStats();
     }
     createLevels(levels) {
-        //TODO create levels from JSON here
+        console.log(levels.name);
+        console.log(levels.lastModification);
     }
     loadLevel(id) {
         let newlevel = this.levels[id];
@@ -57,8 +58,8 @@ class Game {
         this.statDisplayName.push("Logic FPS: ");
     }
     drawStats() {
-        let xOffset = 100;
-        let yOffset = 100;
+        let xOffset = 50;
+        let yOffset = 50;
         let ySize = 20;
         this.statDisplayValue[0] = Math.round(this.drawFPS).toString();
         this.statDisplayValue[1] = Math.round(this.logicFPS).toString();

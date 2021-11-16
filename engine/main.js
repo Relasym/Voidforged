@@ -3,13 +3,13 @@ const context = canvas.getContext("2d");
 const startTime = performance.now();
 const currentInputs = new Set();
 let game;
+//TODO check which of these are still used
 const simulationFPS = 60; //frames per second
-const logicFPSArray = new Array();
 const simulationTPF = 1000 / simulationFPS; //ms
 let isPaused = false;
 const pauseButton = document.getElementsByClassName("pausebutton").item(0);
 const pauseMenu = document.getElementsByClassName("pausemenu").item(0);
-let collisionChecks = 0;
+//TODO most of these should be moved into the game class
 let lastFrameTime = 0;
 let totalRuntime = 0;
 let currentFrame = 0; // last calculated frame, incremented by game logic
@@ -23,12 +23,12 @@ function start() {
     logicLoop();
     drawLoop();
 }
+//TODO these too should be in the game class
 function logicLoop() {
-    setTimeout(logicLoop, 0);
+    setTimeout(logicLoop, 1);
     //only process logic if not paused and enough time has passed
     if (!isPaused) {
         let currentFrameDuration = performance.now() - lastFrameTime;
-        collisionChecks = 0;
         game.update(currentFrameDuration);
         currentFrame++;
         lastFrameTime = performance.now();
@@ -44,19 +44,13 @@ function drawLoop() {
         game.draw();
     }
 }
-function vectorLength(vector) {
-    return Math.sqrt(vector.x * vector.x + vector.y * vector.y);
-}
-function normalizeVector(vector) {
-    let length = vectorLength(vector);
-    return { x: vector.x / length, y: vector.y / length };
-}
 /* storing currently pressed buttons */
 document.addEventListener('keydown', (keypress) => {
     currentInputs.add(keypress.key);
     if (keypress.key == "Escape") {
         togglePause();
     }
+    // left for future reference, delete if unneccesary
     // if (keypress.key == "1") {
     //     activateOrCreateLevel(1);
     // }
@@ -123,4 +117,6 @@ window.addEventListener('load', (event) => {
     start();
 });
 //pause game if window is unfocused to prevent large simulation ticks
+//TODO this is not sufficient as it doesn't cover other reasons the tab might be paused,
+//e.g. pc going into power saving mode. pretty rare though.
 window.onblur = () => togglePause();

@@ -11,7 +11,6 @@ var imageDirection;
 //basic object, includes register/deregister and destruction
 class GameObject {
     constructor(level, shape, type, color) {
-        this.velocity = { x: 0, y: 0 };
         this.maxspeed = 1000;
         //toggles
         this.hasCollision = true;
@@ -44,10 +43,11 @@ class GameObject {
         this.color = color;
         this.image = new Image();
         this.walkFrames = new Array();
+        this.velocity = new Vector(0, 0);
         //maximum radius for simple collision checking
         if (this.shape.radius == undefined) {
             if (this.type == collisionType.Rectangle) {
-                this.shape.radius = vectorLength({ x: this.shape.width, y: this.shape.height });
+                this.shape.radius = new Vector(this.shape.width, this.shape.height).length();
             }
         }
     }
@@ -89,8 +89,8 @@ class GameObject {
     }
     updateAfterCollision(currentFrameDuration, timeScale) {
         if (!this.isDestroying || this.movesWhileDestroying) {
-            if (vectorLength(this.velocity) > this.maxspeed) {
-                this.velocity = normalizeVector(this.velocity);
+            if (this.velocity.length() > this.maxspeed) {
+                this.velocity.normalize();
                 this.velocity.x *= this.maxspeed;
                 this.velocity.y *= this.maxspeed;
             }
@@ -107,7 +107,7 @@ class GameObject {
         }
     }
     distanceTo(object) {
-        return vectorLength({ x: this.shape.x - object.shape.x, y: this.shape.y - object.shape.y });
+        return new Vector(this.shape.x - object.shape.x, this.shape.y - object.shape.y).length();
     }
     draw() {
         //TODO collect all draw operations into an object

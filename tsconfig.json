@@ -12,6 +12,7 @@
         "voidforged/voidforgedMain.ts",
         "voidforged/voidforgedObjects.ts",
         "voidforged/voidforgedLevels.ts",
-        "voidforged/voidforgedGame.ts"
+        "voidforged/voidforgedGame.ts",
+        "engine/helper/helper.ts"
     ]
 }

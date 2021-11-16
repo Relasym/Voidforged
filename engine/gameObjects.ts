@@ -30,9 +30,10 @@ enum imageDirection {
     Right
 }
 
+
 interface GameObjectInterface {
     shape: shape;
-    velocity: { x: any, y: any };
+    velocity: Vector;
     isDestroying: boolean;
     type: collisionType;
     draw(): void;
@@ -53,7 +54,7 @@ class GameObject implements GameObjectInterface {
 
     //position, shape and velocity
     shape: shape;
-    velocity = { x: 0, y: 0 };
+    velocity :Vector;
     maxspeed = 1000;
 
     //toggles
@@ -107,10 +108,11 @@ class GameObject implements GameObjectInterface {
         this.color = color;
         this.image = new Image();
         this.walkFrames = new Array();
+        this.velocity=new Vector(0,0);
         //maximum radius for simple collision checking
         if (this.shape.radius == undefined) {
             if (this.type == collisionType.Rectangle) {
-                this.shape.radius = vectorLength({ x: this.shape.width, y: this.shape.height });
+                this.shape.radius = new Vector(this.shape.width,this.shape.height).length();
             }
         }
     }
@@ -156,8 +158,8 @@ class GameObject implements GameObjectInterface {
     }
     updateAfterCollision(currentFrameDuration: number, timeScale: number): void {
         if (!this.isDestroying || this.movesWhileDestroying) {
-            if (vectorLength(this.velocity) > this.maxspeed) {
-                this.velocity = normalizeVector(this.velocity);
+            if (this.velocity.length() > this.maxspeed) {
+                this.velocity.normalize();
                 this.velocity.x *= this.maxspeed;
                 this.velocity.y *= this.maxspeed;
             }
@@ -175,7 +177,7 @@ class GameObject implements GameObjectInterface {
     }
 
     distanceTo(object: GameObjectInterface): number {
-        return vectorLength({ x: this.shape.x - object.shape.x, y: this.shape.y - object.shape.y })
+        return new Vector(this.shape.x - object.shape.x,this.shape.y - object.shape.y).length();
     }
 
     draw(): void {

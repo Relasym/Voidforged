@@ -57,6 +57,9 @@ class VoidforgedGame extends Game {
             this.characterSpritesTurn.push(new Image());
             this.characterSpritesTurn[i].src = characterSpritesTurnSrc[i];
         }
+        //import JSON
+        // let importedjson:any;
+        // this.createLevels(importedjson);
         this.restart();
     }
     restart() {

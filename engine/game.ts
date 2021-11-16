@@ -1,3 +1,9 @@
+interface importedJSON {
+    name:string;
+    lastModification:string;
+    levels:Level[];
+}
+
 class Game {
     context: CanvasRenderingContext2D;
     isPaused: boolean;
@@ -36,8 +42,9 @@ class Game {
         this.initializeStats();
     }
 
-    createLevels(levels: JSON) {
-        //TODO create levels from JSON here
+    createLevels(levels: importedJSON) {
+        console.log(levels.name);
+        console.log(levels.lastModification);
     }
 
     loadLevel(id:number) {
@@ -89,8 +96,8 @@ class Game {
     }
         
     drawStats() { 
-        let xOffset=100;
-        let yOffset=100;
+        let xOffset=50;
+        let yOffset=50;
         let ySize=20;
         this.statDisplayValue[0]=Math.round(this.drawFPS).toString();
         this.statDisplayValue[1]=Math.round(this.logicFPS).toString();

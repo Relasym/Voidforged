@@ -56,6 +56,7 @@ class Level {
     loadFromJSON(json:jsonLevel) {
         this.name=json.name;
 
+
     }
 
 

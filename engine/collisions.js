@@ -1,7 +1,7 @@
 /*collision functions */
+//TODO these should check for collisions between shapes, not objects
 //calls appropriate collision function for given object types/shapes
 function areObjectsColliding(object1, object2) {
-    collisionChecks++;
     //no collision if objects are too far apart
     if (!collisionCircleCircle(object1, object2)) {
         return false;
@@ -47,5 +47,5 @@ function collisionRectangleCircle(rectangle, circle) {
 }
 //TODO this doesn't work for rectangles of different sizes since it assumes the coordinates are the center
 function collisionCircleCircle(circle1, circle2) {
-    return (vectorLength({ x: circle1.shape.x - circle2.shape.x, y: circle1.shape.y - circle2.shape.y }) <= (circle1.shape.radius + circle2.shape.radius));
+    return (new Vector(circle1.shape.x - circle2.shape.x, circle1.shape.y - circle2.shape.y).length() <= (circle1.shape.radius + circle2.shape.radius));
 }
