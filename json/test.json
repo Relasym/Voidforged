@@ -1,0 +1,16 @@
+{
+	"levels":[
+		{
+			"objects":[{"Type":3,"XPosition":20,"YPosition":100,"Width":50,"Height":50},				{"Type":5,"XPosition":0,"YPosition":0,"Width":0,"Height":0}],
+			"lastModification":"2021-11-09T15:18:11.8708434+01:00",
+			"Name":"testlevel1"
+		},
+		{
+			"objects":[],
+			"lastModification":"2021-11-09T15:18:11.870844+01:00",
+			"Name":"testlevel2"
+		}
+		],
+	"Name":"Hello",
+	"lastModification":"2021-11-09T15:18:11.8708443+01:00"
+}

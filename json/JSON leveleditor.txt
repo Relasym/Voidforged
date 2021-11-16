@@ -1,0 +1,15 @@
+game contains:
+Name
+Modification Date
+List of Levels
+
+Level contains:
+Name
+List of GameObjects
+
+GameObject Contains:
+Type
+xPosition
+yPosition
+width
+height
