@@ -1,7 +1,3 @@
-type camera = {
-    x: number;
-    y: number;
-}
 
 type jsonLevel = {
     name:string;
@@ -18,7 +14,7 @@ class Level {
     name: string;
     context: CanvasRenderingContext2D;
     player?: PlayerInterface;
-    camera?: camera;
+    camera?: Vector
     backgroundColor?: color;
     backgroundImage?: HTMLImageElement; //TODO implement usage of *static* background
 
@@ -48,7 +44,7 @@ class Level {
             this.objectsByFaction.push(new Set());
         }
         this.totalRuntime = 0;
-        this.camera = { x: 0, y: 0 };
+        this.camera = new Vector(0,0);
         this.isPaused=false;
         this.timeScale=1.0;
     }

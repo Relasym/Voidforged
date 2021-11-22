@@ -13,7 +13,7 @@ class Game {
     currentLevel: Level;
     currentLevelIndex: number; //TODO replaced by levelmap
     currentLevelID: string;
-    levelTransitionMap: Map<string, string>; //maps leveltransitionobjects to level is
+    levelTransitionMap: Map<string, string>; //maps leveltransitionobjects to level ids
     levelMap: Map<string, Level>; //maps level ids to level instances
     startingLevel: string; //ID of the level we want to start with
     targetLevel: string; //the level ID we want to run (currently)
