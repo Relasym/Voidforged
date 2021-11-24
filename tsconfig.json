@@ -12,9 +12,9 @@
         "game/engine/level.ts",
         "game/engine/collisions.ts",
         "game/engine/game.ts",
+        "game/engine/helper/helper.ts",
         "game/voidforged/voidforgedObjects.ts",
         "game/voidforged/voidforgedLevels.ts",
-        "game/voidforged/voidforgedGame.ts",
-        "game/engine/helper/helper.ts"
+        "game/voidforged/voidforgedGame.ts"
     ]
 }
