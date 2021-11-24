@@ -1,7 +1,7 @@
 class VoidforgedEmptyLevel extends Level {
     constructor(context, owner) {
         super(context, owner);
-        this.usePlayerCamera = false;
+        this.usePlayerCamera = true;
         this.start();
         this.backgroundColor = { r: 100, b: 100, g: 100, a: 1 };
         this.gravity = 1500;
