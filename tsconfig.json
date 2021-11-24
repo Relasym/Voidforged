@@ -3,7 +3,8 @@
         "target": "ES2015",
         "alwaysStrict": true,
         "noImplicitAny": true,
-        "outFile": "js/game.js"
+        "outFile": "js/game.js",
+        "removeComments": true
     },
     "files": [
         "game/engine/main.ts",

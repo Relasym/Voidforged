@@ -4,30 +4,24 @@ const context = canvas.getContext("2d");
 const startTime = performance.now();
 const currentInputs = new Set();
 let game;
-//TODO check which of these are still used
-const simulationFPS = 60; //frames per second
-const simulationTPF = 1000 / simulationFPS; //ms
+const simulationFPS = 60;
+const simulationTPF = 1000 / simulationFPS;
 let isPaused = false;
 const pauseButton = document.getElementsByClassName("pausebutton").item(0);
 const pauseMenu = document.getElementsByClassName("pausemenu").item(0);
-//TODO most of these should be moved into the game class
 let lastFrameTime = 0;
 let totalRuntime = 0;
-let currentFrame = 0; // last calculated frame, incremented by game logic
-let lastDrawnFrame = 0; // last drawn frame, incremented by draw loop
+let currentFrame = 0;
+let lastDrawnFrame = 0;
 function start() {
-    //html stat display, static part
     game = new VoidforgedGame(context);
-    //unpause and start Game
     togglePause();
     pauseButton.textContent = "Start";
     logicLoop();
     drawLoop();
 }
-//TODO these too should be in the game class
 function logicLoop() {
     setTimeout(logicLoop, 1);
-    //only process logic if not paused and enough time has passed
     if (!isPaused) {
         let currentFrameDuration = performance.now() - lastFrameTime;
         game.update(currentFrameDuration);
@@ -36,65 +30,33 @@ function logicLoop() {
     }
 }
 function drawLoop() {
-    //draw frame & callback
     requestAnimationFrame(drawLoop);
     if (!isPaused && currentFrame > lastDrawnFrame) {
         lastDrawnFrame++;
-        //reset frame
         context.clearRect(0, 0, canvas.width, canvas.height);
         game.draw();
     }
 }
-/* storing currently pressed buttons */
 document.addEventListener('keydown', (keypress) => {
     currentInputs.add(keypress.key);
     if (keypress.key == "Escape") {
         togglePause();
     }
-    // left for future reference, delete if unneccesary
-    // if (keypress.key == "1") {
-    //     activateOrCreateLevel(1);
-    // }
-    // if (keypress.key == "2") {
-    //     activateOrCreateLevel(2);
-    // }
-    // if (keypress.key == "3") {
-    //     activateOrCreateLevel(3);
-    // }
-    // if (keypress.key == "r" && isPaused == false) {
-    //     levels[currentLevel] = new VoidforgedTestLevel(context);
-    // }
 });
 document.addEventListener('keyup', (keypress) => {
     currentInputs.delete(keypress.key);
 });
 document.addEventListener('mousedown', (btn) => {
     currentInputs.add("MB" + btn.button);
-    // let mouseX = btn.clientX - canvas.offsetLeft;
-    // let mouseY = btn.clientY - canvas.offsetTop;
-    // console.log(mouseX + " " + mouseY)
 });
 document.addEventListener('mouseup', (btn) => {
     currentInputs.delete("MB" + btn.button);
 });
 pauseButton.addEventListener("click", function () {
     togglePause();
-    this.blur(); //unfocus so spacebar can't trigger pause
+    this.blur();
 });
 function activateOrCreateLevel(number) {
-    //can load different kinds of level here
-    // if (levels[number] == null) {
-    //     if (number == 1) {
-    //         levels[number] = new VoidforgedTestLevel(context);
-    //     }
-    //     if (number == 2) {
-    //         levels[number] = new VoidforgedTestLevel(context);
-    //     }
-    //     if (number == 3) {
-    //         levels[number] = new VoidforgedTestLevel(context);
-    //     }
-    // }
-    // currentLevel = number;
 }
 function togglePause() {
     pauseMenu.classList.toggle("visible");
@@ -110,16 +72,11 @@ function togglePause() {
         document.getElementById("menuline2").innerHTML = "voidforged message";
     }
 }
-//DOM loaded
 window.addEventListener('DOMContentLoaded', (event) => {
 });
-//fully loaded
 window.addEventListener('load', (event) => {
     start();
 });
-//pause game if window is unfocused to prevent large simulation ticks
-//TODO this is not sufficient as it doesn't cover other reasons the tab might be paused,
-//e.g. pc going into power saving mode. pretty rare though.
 window.onblur = () => togglePause();
 var collisionType;
 (function (collisionType) {
@@ -131,29 +88,23 @@ var imageDirection;
     imageDirection[imageDirection["Left"] = 0] = "Left";
     imageDirection[imageDirection["Right"] = 1] = "Right";
 })(imageDirection || (imageDirection = {}));
-//basic object, includes register/deregister and destruction
 class GameObject {
     constructor(level, shape, type, color) {
         this.maxspeed = 1000;
-        //toggles
         this.hasCollision = true;
         this.isDrawable = true;
         this.isUpdateable = true;
         this.affectedByGravity = false;
-        //object destruction
         this.isDestroying = false;
-        this.destructionTime = 300; //ms
-        this.destructionProgress = 1.0; //destroys object if it reaches 0, used as a multiplier for color alpha
+        this.destructionTime = 300;
+        this.destructionProgress = 1.0;
         this.movesWhileDestroying = false;
         this.imageIsSet = false;
-        //animation Frames
         this.hasAnimation = false;
         this.minWalkAnimationSpeed = 5;
-        this.advanceWalkFrames = 0; //amount of walkframes to advance, set in update(), used in draw()
-        //current angle && rotation toggle
+        this.advanceWalkFrames = 0;
         this.rotation = 0;
         this.canRotate = false;
-        //set by collision every cycle, check if somebody is on the ground;
         this.isContactingTerrain = {
             up: false,
             left: false,
@@ -167,7 +118,6 @@ class GameObject {
         this.image = new Image();
         this.walkFrames = new Array();
         this.velocity = new Vector(0, 0);
-        //maximum radius for simple collision checking
         if (this.shape.radius == undefined) {
             if (this.type == collisionType.Rectangle) {
                 this.shape.radius = new Vector(this.shape.width, this.shape.height).length();
@@ -222,7 +172,6 @@ class GameObject {
         }
         if (this.hasAnimation) {
             if (this.timeInWalkFrame > this.timePerWalkFrame && Math.abs(this.velocity.x) > this.minWalkAnimationSpeed && this.isContactingTerrain.down) {
-                //next frame
                 this.advanceWalkFrames++;
                 this.timeInWalkFrame = 0;
             }
@@ -233,9 +182,7 @@ class GameObject {
         return new Vector(this.shape.x - object.shape.x, this.shape.y - object.shape.y).length();
     }
     draw() {
-        //TODO collect all draw operations into an object
         if (this.type == collisionType.Circle) {
-            //todo add images for circle types
             this.level.context.beginPath();
             this.level.context.arc(this.shape.x - this.level.camera.x, this.shape.y - this.level.camera.y, this.shape.radius, 0, Math.PI * 2, false);
             if (this.isDestroying) {
@@ -273,11 +220,9 @@ class GameObject {
             context.translate(-1 * translateX, -1 * translateY);
             if (this.hasAnimation) {
                 while (this.advanceWalkFrames > 0) {
-                    //next frame
                     this.advanceWalkFrames--;
                     this.currentWalkFrame = (this.currentWalkFrame + 1) % this.walkFrames.length;
                 }
-                //draw frame
                 this.level.context.drawImage(this.walkFrames[this.currentWalkFrame].image, this.walkFrames[this.currentWalkFrame].imageShape.x, this.walkFrames[this.currentWalkFrame].imageShape.y, this.walkFrames[this.currentWalkFrame].imageShape.width, this.walkFrames[this.currentWalkFrame].imageShape.height, this.shape.x - this.level.camera.x, this.shape.y - this.level.camera.y, this.shape.width, this.shape.height);
             }
             else {
@@ -324,10 +269,8 @@ class LevelTransitionObject extends GameObject {
     }
     register() {
         super.register();
-        // this.level.game.levelTransitionMap.set(this.transitionID, this.targetID);
     }
 }
-//basic projectile, not doing much
 class Projectile extends GameObject {
     constructor(level, shape, type, color) {
         super(level, shape, type, color);
@@ -351,7 +294,7 @@ class Level {
         this.updateableObjects = new Set();
         this.projectileObjects = new Set();
         this.usePlayerCamera = true;
-        this.factionAmount = 10; //realistically no more than 4-5 (0: terrain, 1: player, rest: other)
+        this.factionAmount = 10;
         this.objectsByFaction = [];
         this.projectilesByFaction = [];
         this.context = context;
@@ -409,7 +352,6 @@ class Level {
     end() { }
     handleCollisions(objectsByFaction, projectilesByFaction) { }
 }
-//pos
 class GameObjectController {
     constructor(size) {
         this.fillFactor = 0.75;
@@ -435,21 +377,15 @@ class GameObjectController {
         }
     }
 }
-/*collision functions */
-//TODO these should check for collisions between shapes, not objects
-//calls appropriate collision function for given object types/shapes
 function areObjectsColliding(object1, object2) {
-    //no collision if objects are too far apart
     if (!collisionCircleCircle(object1, object2)) {
         return false;
     }
     let type1 = object1.type;
     let type2 = object2.type;
-    //if both objects are circles we don't need any other checks
     if (type1 == collisionType.Circle && type2 == collisionType.Circle) {
         return true;
     }
-    //possible collision, check according to object type
     if (type1 == collisionType.Circle || type2 == collisionType.Circle) {
         return collisionRectangleCircle(object1, object2);
     }
@@ -482,7 +418,6 @@ function collisionRectangleCircle(rectangle, circle) {
     let dist = Math.sqrt(Math.pow((circle.shape.x - xborder), 2) + Math.pow((circle.shape.y - yborder), 2));
     return (dist <= circle.shape.radius);
 }
-//TODO this doesn't work for rectangles of different sizes since it assumes the coordinates are the center
 function collisionCircleCircle(circle1, circle2) {
     return (new Vector(circle1.shape.x - circle2.shape.x, circle1.shape.y - circle2.shape.y).length() <= (circle1.shape.radius + circle2.shape.radius));
 }
@@ -519,7 +454,6 @@ class Game {
             this.logicFrameTimeArray.push(currentFrameDuration);
             let averageFrameTime = this.logicFrameTimeArray.reduce((a, b) => a + b) / this.logicFrameTimeArray.length;
             this.logicFPS = 1000 / averageFrameTime;
-            //TODO compare currentlevel and and targetlevel, start switch if not equal
             this.currentLevel.update(currentFrameDuration, this.timeScale);
         }
     }
@@ -538,7 +472,6 @@ class Game {
     start() {
     }
     restart() {
-        //TODO reset player object here
         this.targetLevel = this.startingLevel;
     }
     initializeStats() {
@@ -572,7 +505,7 @@ class VoidforgedActor extends Actor {
 class VoidforgedPlayer extends GameObject {
     constructor(owner, shape, type, color) {
         super(owner, shape, type, color);
-        this.movementAcceleration = 500; //per second
+        this.movementAcceleration = 500;
         this.maxSpeed = 2000;
         this.airFriction = 0.0;
         this.groundFriction = 5.0;
@@ -603,9 +536,6 @@ class VoidforgedPlayer extends GameObject {
         this.velocity.y *= 1 - this.airFriction * currentFrameDuration / 1000;
     }
     updateAfterCollision(currentFrameDuration, timeScale) {
-        // if(currentInputs.size>0) {
-        //     console.log(this.isContactingTerrain.up,this.isContactingTerrain.down,this.isContactingTerrain.right,this.isContactingTerrain.left);
-        // }
         if (currentInputs.has("a")) {
             this.velocity.x -= this.movementAcceleration * currentFrameDuration * timeScale / 1000;
         }
@@ -616,7 +546,6 @@ class VoidforgedPlayer extends GameObject {
             this.velocity.y -= 500;
         }
         if (currentInputs.has("s")) {
-            // this.velocity.y+=300;
         }
         if (this.isContactingTerrain.down) {
             this.velocity.x *= 1 - this.groundFriction * currentFrameDuration * timeScale / 1000;
@@ -640,11 +569,9 @@ class VoidforgedEmptyLevel extends Level {
         this.backgroundImage = this.game.backgroundImage;
     }
     start() {
-        //player
         let player = new VoidforgedPlayer(this, { x: 100, y: 100, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
         player.register();
         this.player = player;
-        //walls
         let blocksize = 64;
         for (let i = 0; i < Math.floor(canvas.width / blocksize); i++) {
             this.createFillerBlock(blocksize * i, canvas.height - blocksize * 1);
@@ -675,19 +602,7 @@ class VoidforgedEmptyLevel extends Level {
         levelTransition.register();
     }
     handleCollisions(objectsByFaction, projectilesByFaction) {
-        /*
-        TODO
-        first projectiles collide:
-            a, with non-faction projectiles
-            b, with non-faction actors
-            c, with terrain
-        second actors collide
-            a, with non-faction actors
-            b, with terrain
-        */
-        //Projectile collisions
-        for (let i = 0; i < projectilesByFaction.length; i++) { //faction 0 should not have projectiles?
-            //  projectile collides with other projectile
+        for (let i = 0; i < projectilesByFaction.length; i++) {
             for (let j = 0; j < projectilesByFaction.length; j++) {
                 if (i != j) {
                     projectilesByFaction[i].forEach((projectile1) => {
@@ -701,7 +616,6 @@ class VoidforgedEmptyLevel extends Level {
                     });
                 }
             }
-            //projectile collides with faction object other than faction 0 (terrain)
             for (let j = 1; j < objectsByFaction.length; j++) {
                 if (i != j) {
                     projectilesByFaction[i].forEach((projectile) => {
@@ -715,9 +629,7 @@ class VoidforgedEmptyLevel extends Level {
                     });
                 }
             }
-            //projectile collides with faction 0 object (terrain)
             if (i != 0) {
-                //TODO let faction 0 projectiles collide with terrain?
                 projectilesByFaction[i].forEach((projectile) => {
                     objectsByFaction[0].forEach((object) => {
                         if (projectile.hasCollision && object.hasCollision && areObjectsColliding(projectile, object)) {
@@ -742,13 +654,11 @@ class VoidforgedEmptyLevel extends Level {
             for (let object1 of objectsByFaction[i]) {
                 for (let object2 of objectsByFaction[0]) {
                     if (object1.hasCollision && object2.hasCollision && areObjectsColliding(object1, object2)) {
-                        // object1.velocity = { x: 0, y: 0 };
                         if (object2.constructor.name == "VoidforgedLevelTransition") {
                             object2.level.game.loadLevel(object2.targetID);
                             console.log("Level transition");
                             console.log(this.game.levels);
                         }
-                        //push object out instead
                         let distances = new Array();
                         distances.push(object1.shape.x + object1.shape.width - object2.shape.x);
                         distances.push(object2.shape.x + object2.shape.width - object1.shape.x);
@@ -756,7 +666,7 @@ class VoidforgedEmptyLevel extends Level {
                         distances.push(object2.shape.y + object2.shape.height - object1.shape.y);
                         for (let i = 0; i < distances.length; i++) {
                             if (distances[i] < 0) {
-                                distances[i] = 9999; //TODO fix hack
+                                distances[i] = 9999;
                             }
                         }
                         let index = distances.indexOf(Math.min(...distances));
@@ -796,7 +706,6 @@ class VoidforgedLevelLeft extends VoidforgedEmptyLevel {
     start() {
         super.start();
         let blocksize = 64;
-        //some blocks to jump around on
         for (let i = 1; i < Math.floor(canvas.width / blocksize) - 1; i++) {
             this.createWallBlock(blocksize * i, canvas.height - 2 * blocksize);
         }
@@ -813,7 +722,6 @@ class VoidforgedLevelRight extends VoidforgedEmptyLevel {
     start() {
         super.start();
         let blocksize = 64;
-        //some blocks to jump around on
         for (let i = 1; i < Math.floor(canvas.width / blocksize) - 1; i++) {
             this.createWallBlock(blocksize * i, canvas.height - 2 * blocksize);
         }
@@ -833,9 +741,7 @@ class VoidforgedLevelRight extends VoidforgedEmptyLevel {
 class VoidforgedGame extends Game {
     constructor(context) {
         super(context);
-        //Background Image
         this.backgroundImage.src = "img\\Backgrounds\\Background cave2.png";
-        //Level Blocks
         let wallBlockSrc = new Array();
         wallBlockSrc.push("img\\Tiles\\Cave filler block1.png");
         wallBlockSrc.push("img\\Tiles\\Cave filler block2.png");
@@ -862,13 +768,10 @@ class VoidforgedGame extends Game {
         this.groundFlat.src = "img\\Tiles\\ground tile flat.png";
         this.groundSlanted = new Image();
         this.groundSlanted.src = "img\\Tiles\\ground tile slanted.png";
-        //platforms
         this.platformMid = new Image();
         this.platformMid.src = "img\\Tiles\\jumping platform mid.png";
         this.platformEnd = new Image();
         this.platformEnd.src = "img\\Tiles\\jumping platform end.png";
-        //character
-        //walk
         let characterSpritesWalkSrc = new Array();
         characterSpritesWalkSrc.push("img\\Sprites\\1Character cheap2 side new.png");
         characterSpritesWalkSrc.push("img\\Sprites\\Character cheap2_2 side new.png");
@@ -878,8 +781,7 @@ class VoidforgedGame extends Game {
             this.characterSpritesWalk.push(new Image());
             this.characterSpritesWalk[i].src = characterSpritesWalkSrc[i];
         }
-        this.characterSpritesWalk.reverse(); //current images are in the wrong order
-        //turn
+        this.characterSpritesWalk.reverse();
         let characterSpritesTurnSrc = new Array();
         characterSpritesTurnSrc.push("img\\Sprites\\1Character cheap2 side new.png");
         characterSpritesTurnSrc.push("img\\Sprites\\Character cheap2 turn new.png");
@@ -889,9 +791,6 @@ class VoidforgedGame extends Game {
             this.characterSpritesTurn.push(new Image());
             this.characterSpritesTurn[i].src = characterSpritesTurnSrc[i];
         }
-        //import JSON
-        // let importedjson:any;
-        // this.createLevels(importedjson);
         this.restart();
     }
     restart() {
