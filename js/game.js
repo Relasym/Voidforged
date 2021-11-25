@@ -28,6 +28,7 @@ function logicLoop() {
     setTimeout(logicLoop, 1);
     if (!isPaused) {
         let currentFrameDuration = performance.now() - lastFrameTime;
+        totalRuntime = performance.now() - startTime;
         game.update(currentFrameDuration);
         currentFrame++;
         lastFrameTime = performance.now();
@@ -529,6 +530,12 @@ class Vector {
         this.x /= length;
         this.y /= length;
     }
+    differenceTo(vector) {
+        let result = new Vector(0, 0);
+        result.x = vector.x - this.x;
+        result.y = vector.y - this.y;
+        return result;
+    }
 }
 class VoidforgedObject extends GameObject {
     constructor(owner, shape, type, color) {
@@ -616,10 +623,17 @@ class VoidforgedEnemy1 extends VoidforgedActor {
         this.timePerWalkFrame = 200;
         this.hasAnimation = true;
     }
+    updateBeforeCollision(currentFrameDuration, timeScale) {
+        super.updateBeforeCollision(currentFrameDuration, timeScale);
+        this.velocity.x += Math.sin(totalRuntime);
+        this.velocity.y += Math.cos(totalRuntime);
+    }
 }
 class VoidforgedEnemy2 extends VoidforgedActor {
     constructor(owner, shape, type, color) {
         super(owner, shape, type, color);
+        this.lastShot = performance.now();
+        this.shotDelay = 1000;
         this.image = this.level.game.enemy2SpritesAttack[0];
         this.affectedByGravity = false;
         this.faction = 2;
@@ -641,11 +655,36 @@ class VoidforgedEnemy2 extends VoidforgedActor {
         this.timePerWalkFrame = 200;
         this.hasAnimation = true;
     }
+    updateBeforeCollision(currentFrameDuration, timeScale) {
+        super.updateBeforeCollision(currentFrameDuration, timeScale);
+        let time = performance.now();
+        if (time >= this.lastShot + this.shotDelay) {
+            let projectile = new Enemy2Projectile(this.level, { x: this.shape.x + this.shape.width / 2, y: this.shape.y + this.shape.height / 2, width: 32, height: 32 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
+            projectile.faction = this.faction;
+            if (this.level.player != null) {
+                let vector = new Vector(this.level.player.shape.x - this.shape.x, this.level.player.shape.y - this.shape.y);
+                vector.normalize();
+                projectile.velocity.x = vector.x * 300;
+                projectile.velocity.y = vector.y * 300;
+            }
+            projectile.register();
+            this.lastShot = performance.now();
+        }
+        this.velocity.x = 50 * Math.sin(totalRuntime / 1000);
+        this.velocity.y = 50 * Math.cos(totalRuntime / 1000);
+    }
 }
 class VoidforgedLevelTransition extends LevelTransitionObject {
     constructor(owner, shape, type, color) {
         super(owner, shape, type, color);
         this.faction = 0;
+    }
+}
+class Enemy2Projectile extends Projectile {
+    constructor(level, shape, type, color) {
+        super(level, shape, type, color);
+        this.setImage(this.level.game.bullet);
+        this.imageDirection = imageDirection.Right;
     }
 }
 class VoidforgedLevel extends Level {
@@ -673,10 +712,8 @@ class VoidforgedLevel extends Level {
         let newLevel = new VoidforgedLevel(context, owner);
         newLevel.name = json.Name;
         let objects = json.Objects;
-        console.log(objects);
         for (let i = 0; i < objects.length; i++) {
             let currentObject = objects[i];
-            console.log(currentObject);
             switch (currentObject.Type) {
                 case 0: {
                     owner.startingLevel = newLevel.name;
@@ -724,7 +761,6 @@ class VoidforgedLevel extends Level {
     }
     createPlayer(x, y) {
         let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
-        newBlock.setImage(this.game.caveWallBlock);
         newBlock.faction = 0;
         newBlock.register();
     }
@@ -751,7 +787,6 @@ class VoidforgedLevel extends Level {
                     projectilesByFaction[i].forEach((projectile1) => {
                         projectilesByFaction[j].forEach((projectile2) => {
                             if (projectile1.hasCollision && projectile2.hasCollision && areObjectsColliding(projectile1, projectile2)) {
-                                console.log("proj proj coll");
                                 projectile1.startDestruction();
                                 projectile2.startDestruction();
                             }
@@ -764,7 +799,6 @@ class VoidforgedLevel extends Level {
                     projectilesByFaction[i].forEach((projectile) => {
                         objectsByFaction[j].forEach((object) => {
                             if (projectile.hasCollision && object.hasCollision && areObjectsColliding(projectile, object)) {
-                                console.log("proj act coll");
                                 projectile.startDestruction();
                                 object.startDestruction();
                             }
@@ -777,7 +811,6 @@ class VoidforgedLevel extends Level {
                     objectsByFaction[0].forEach((object) => {
                         if (projectile.hasCollision && object.hasCollision && areObjectsColliding(projectile, object)) {
                             projectile.startDestruction();
-                            console.log("proj terr coll");
                         }
                     });
                 });
@@ -885,6 +918,8 @@ class VoidforgedGame extends Game {
     constructor(context) {
         super(context);
         this.backgroundImage.src = "img\\Backgrounds\\Background cave2.png";
+        this.bullet = new Image();
+        this.bullet.src = "img\\Sprites\\bullet.png";
         let wallBlockSrc = new Array();
         wallBlockSrc.push("img\\Tiles\\Cave filler block1.png");
         wallBlockSrc.push("img\\Tiles\\Cave filler block2.png");

@@ -35,10 +35,10 @@ class VoidforgedLevel extends Level {
         let newLevel = new VoidforgedLevel(context, owner);
         newLevel.name = json.Name;
         let objects = json.Objects;
-        console.log(objects);
+        // console.log(objects);
         for (let i = 0; i < objects.length; i++) {
             let currentObject = objects[i];
-            console.log(currentObject);
+            // console.log(currentObject);
             switch (currentObject.Type) {
                 case 0: {
                     //player
@@ -89,7 +89,6 @@ class VoidforgedLevel extends Level {
     }
     createPlayer(x: number, y: number) {
         let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
-        newBlock.setImage(this.game.caveWallBlock);
         newBlock.faction = 0;
         newBlock.register()
     }
@@ -134,7 +133,7 @@ class VoidforgedLevel extends Level {
                     projectilesByFaction[i].forEach((projectile1: any) => {
                         projectilesByFaction[j].forEach((projectile2: any) => {
                             if (projectile1.hasCollision && projectile2.hasCollision && areObjectsColliding(projectile1, projectile2)) {
-                                console.log("proj proj coll")
+                                // console.log("proj proj coll")
                                 projectile1.startDestruction();
                                 projectile2.startDestruction();
                             }
@@ -148,7 +147,7 @@ class VoidforgedLevel extends Level {
                     projectilesByFaction[i].forEach((projectile: any) => {
                         objectsByFaction[j].forEach((object: any) => {
                             if (projectile.hasCollision && object.hasCollision && areObjectsColliding(projectile, object)) {
-                                console.log("proj act coll")
+                                // console.log("proj act coll")
                                 projectile.startDestruction();
                                 object.startDestruction();
                             }
@@ -163,7 +162,7 @@ class VoidforgedLevel extends Level {
                     objectsByFaction[0].forEach((object: any) => {
                         if (projectile.hasCollision && object.hasCollision && areObjectsColliding(projectile, object)) {
                             projectile.startDestruction();
-                            console.log("proj terr coll");
+                            // console.log("proj terr coll");
                         }
                     })
                 })

@@ -58,6 +58,7 @@ function logicLoop(): void {
     //only process logic if not paused and enough time has passed
     if (!isPaused) {
         let currentFrameDuration = performance.now() - lastFrameTime;
+        totalRuntime=performance.now()-startTime;
 
         game.update(currentFrameDuration);
 

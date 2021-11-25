@@ -10,12 +10,17 @@ class VoidforgedGame extends Game {
     characterSpritesTurn: HTMLImageElement[];
     enemy1SpritesIdle: HTMLImageElement[];
     enemy2SpritesAttack: HTMLImageElement[];
+    bullet: HTMLImageElement;
 
 
     constructor(context: CanvasRenderingContext2D) {
         super(context);
         //Background Image
         this.backgroundImage.src = "img\\Backgrounds\\Background cave2.png";
+
+        this.bullet=new Image();
+        this.bullet.src="img\\Sprites\\bullet.png";
+
 
         //Level Blocks
         let wallBlockSrc: string[] = new Array();

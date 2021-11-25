@@ -16,4 +16,11 @@ class Vector {
         this.y /= length;
     }
 
+    differenceTo(vector:Vector) {
+        let result = new Vector(0,0);
+        result.x=vector.x-this.x;
+        result.y=vector.y-this.y;
+        return result;
+    }
+
 }
