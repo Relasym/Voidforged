@@ -76,6 +76,63 @@ class VoidforgedPlayer extends GameObject {
         super.updateAfterCollision(currentFrameDuration,timeScale);
     }
 
+}
+
+class VoidforgedEnemy1 extends VoidforgedActor{
+    level: VoidforgedLevel;
+
+    constructor(owner: VoidforgedLevel, shape: shape, type: collisionType, color: color) {
+        super(owner, shape, type, color);
+        this.image = this.level.game.enemy1SpritesIdle[0];
+        this.affectedByGravity = true;
+        this.faction = 2;
+        this.imageDirection = imageDirection.Right;
+        for (let i = 0; i < this.level.game.enemy1SpritesIdle.length; i++) {
+            this.walkFrames.push({
+                image: this.level.game.enemy1SpritesIdle[i],
+                imageShape: {
+                    x: 0,
+                    y: 0,
+                    width: this.level.game.enemy1SpritesIdle[i].width,
+                    height: this.level.game.enemy1SpritesIdle[i].height
+                },
+                imageDirection: imageDirection.Left
+            });
+        }
+        this.currentWalkFrame = 0;
+        this.timeInWalkFrame = 0;
+        this.timePerWalkFrame = 200;
+        this.hasAnimation = true;
+    }
+
+}
+
+class VoidforgedEnemy2 extends VoidforgedActor{
+    level: VoidforgedLevel;
+
+    constructor(owner: VoidforgedLevel, shape: shape, type: collisionType, color: color) {
+        super(owner, shape, type, color);
+        this.image = this.level.game.enemy2SpritesAttack[0];
+        this.affectedByGravity = false;
+        this.faction = 2;
+        this.imageDirection = imageDirection.Right;
+        for (let i = 0; i < this.level.game.enemy2SpritesAttack.length; i++) {
+            this.walkFrames.push({
+                image: this.level.game.enemy2SpritesAttack[i],
+                imageShape: {
+                    x: 0,
+                    y: 0,
+                    width: this.level.game.enemy2SpritesAttack[i].width,
+                    height: this.level.game.enemy2SpritesAttack[i].height
+                },
+                imageDirection: imageDirection.Left
+            });
+        }
+        this.currentWalkFrame = 0;
+        this.timeInWalkFrame = 0;
+        this.timePerWalkFrame = 200;
+        this.hasAnimation = true;
+    }
 
 }
 

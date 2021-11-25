@@ -8,6 +8,8 @@ class VoidforgedGame extends Game {
     platformEnd: HTMLImageElement;
     characterSpritesWalk: HTMLImageElement[];
     characterSpritesTurn: HTMLImageElement[];
+    enemy1SpritesIdle: HTMLImageElement[];
+    enemy2SpritesAttack: HTMLImageElement[];
 
 
     constructor(context: CanvasRenderingContext2D) {
@@ -71,6 +73,31 @@ class VoidforgedGame extends Game {
         for (let i = 0; i < characterSpritesTurnSrc.length; i++) {
             this.characterSpritesTurn.push(new Image());
             this.characterSpritesTurn[i].src = characterSpritesTurnSrc[i];
+        }
+
+        
+
+        let enemy1SpritesIdleSrc: string[] = new Array();
+        enemy1SpritesIdleSrc.push("img\\Sprites\\slime1.png");
+        enemy1SpritesIdleSrc.push("img\\Sprites\\slime2.png");
+        enemy1SpritesIdleSrc.push("img\\Sprites\\slime3.png");
+        enemy1SpritesIdleSrc.push("img\\Sprites\\slime4.png");
+        enemy1SpritesIdleSrc.push("img\\Sprites\\slime5.png");
+        this.enemy1SpritesIdle = new Array();
+        for (let i = 0; i < enemy1SpritesIdleSrc.length; i++) {
+            this.enemy1SpritesIdle.push(new Image());
+            this.enemy1SpritesIdle[i].src = enemy1SpritesIdleSrc[i];
+        }
+
+        let enemy2SpritesAttackSrc: string[] = new Array();
+        enemy2SpritesAttackSrc.push("img\\Sprites\\brain1.png");
+        enemy2SpritesAttackSrc.push("img\\Sprites\\brain2.png");
+        enemy2SpritesAttackSrc.push("img\\Sprites\\brain3.png");
+        enemy2SpritesAttackSrc.push("img\\Sprites\\brain4.png");
+        this.enemy2SpritesAttack = new Array();
+        for (let i = 0; i < enemy2SpritesAttackSrc.length; i++) {
+            this.enemy2SpritesAttack.push(new Image());
+            this.enemy2SpritesAttack[i].src = enemy2SpritesAttackSrc[i];
         }
 
         //import JSON

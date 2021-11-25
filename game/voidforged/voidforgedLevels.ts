@@ -56,6 +56,14 @@ class VoidforgedLevel extends Level {
                     newLevel.createWallBlock(currentObject.XPosition * blockSize, currentObject.YPosition * blockSize);
                     break;
                 }
+                case 7: {
+                    newLevel.createEnemy1(currentObject.XPosition * blockSize, currentObject.YPosition * blockSize);
+                    break;
+                }
+                case 8: {
+                    newLevel.createEnemy2(currentObject.XPosition * blockSize, currentObject.YPosition * blockSize);
+                    break;
+                }
                 default: {
                     console.log("Unknown Object Type: " + currentObject.Type);
                     break;
@@ -84,6 +92,17 @@ class VoidforgedLevel extends Level {
         newBlock.setImage(this.game.caveWallBlock);
         newBlock.faction = 0;
         newBlock.register()
+    }
+    createEnemy1(x:number,y:number) {
+        let newenemy = new VoidforgedEnemy1(this, { x: x, y: y, width: 32, height: 32 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
+        newenemy.faction=2;
+        newenemy.register();
+    }
+
+    createEnemy2(x:number,y:number) {
+        let newenemy = new VoidforgedEnemy2(this, { x: x, y: y, width: 96, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
+        newenemy.faction=2;
+        newenemy.register();
     }
 
     createLevelTransitionBlock(x: number, y: number, target: number) {

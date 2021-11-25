@@ -592,6 +592,56 @@ class VoidforgedPlayer extends GameObject {
         super.updateAfterCollision(currentFrameDuration, timeScale);
     }
 }
+class VoidforgedEnemy1 extends VoidforgedActor {
+    constructor(owner, shape, type, color) {
+        super(owner, shape, type, color);
+        this.image = this.level.game.enemy1SpritesIdle[0];
+        this.affectedByGravity = true;
+        this.faction = 2;
+        this.imageDirection = imageDirection.Right;
+        for (let i = 0; i < this.level.game.enemy1SpritesIdle.length; i++) {
+            this.walkFrames.push({
+                image: this.level.game.enemy1SpritesIdle[i],
+                imageShape: {
+                    x: 0,
+                    y: 0,
+                    width: this.level.game.enemy1SpritesIdle[i].width,
+                    height: this.level.game.enemy1SpritesIdle[i].height
+                },
+                imageDirection: imageDirection.Left
+            });
+        }
+        this.currentWalkFrame = 0;
+        this.timeInWalkFrame = 0;
+        this.timePerWalkFrame = 200;
+        this.hasAnimation = true;
+    }
+}
+class VoidforgedEnemy2 extends VoidforgedActor {
+    constructor(owner, shape, type, color) {
+        super(owner, shape, type, color);
+        this.image = this.level.game.enemy2SpritesAttack[0];
+        this.affectedByGravity = false;
+        this.faction = 2;
+        this.imageDirection = imageDirection.Right;
+        for (let i = 0; i < this.level.game.enemy2SpritesAttack.length; i++) {
+            this.walkFrames.push({
+                image: this.level.game.enemy2SpritesAttack[i],
+                imageShape: {
+                    x: 0,
+                    y: 0,
+                    width: this.level.game.enemy2SpritesAttack[i].width,
+                    height: this.level.game.enemy2SpritesAttack[i].height
+                },
+                imageDirection: imageDirection.Left
+            });
+        }
+        this.currentWalkFrame = 0;
+        this.timeInWalkFrame = 0;
+        this.timePerWalkFrame = 200;
+        this.hasAnimation = true;
+    }
+}
 class VoidforgedLevelTransition extends LevelTransitionObject {
     constructor(owner, shape, type, color) {
         super(owner, shape, type, color);
@@ -643,6 +693,14 @@ class VoidforgedLevel extends Level {
                     newLevel.createWallBlock(currentObject.XPosition * blockSize, currentObject.YPosition * blockSize);
                     break;
                 }
+                case 7: {
+                    newLevel.createEnemy1(currentObject.XPosition * blockSize, currentObject.YPosition * blockSize);
+                    break;
+                }
+                case 8: {
+                    newLevel.createEnemy2(currentObject.XPosition * blockSize, currentObject.YPosition * blockSize);
+                    break;
+                }
                 default: {
                     console.log("Unknown Object Type: " + currentObject.Type);
                     break;
@@ -669,6 +727,16 @@ class VoidforgedLevel extends Level {
         newBlock.setImage(this.game.caveWallBlock);
         newBlock.faction = 0;
         newBlock.register();
+    }
+    createEnemy1(x, y) {
+        let newenemy = new VoidforgedEnemy1(this, { x: x, y: y, width: 32, height: 32 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
+        newenemy.faction = 2;
+        newenemy.register();
+    }
+    createEnemy2(x, y) {
+        let newenemy = new VoidforgedEnemy2(this, { x: x, y: y, width: 96, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
+        newenemy.faction = 2;
+        newenemy.register();
     }
     createLevelTransitionBlock(x, y, target) {
         let levelTransition = new VoidforgedLevelTransition(this, { x: x, y: y, width: 64, height: 128 }, collisionType.Rectangle, { r: 255, g: 255, b: 0, a: 1 });
@@ -865,6 +933,27 @@ class VoidforgedGame extends Game {
         for (let i = 0; i < characterSpritesTurnSrc.length; i++) {
             this.characterSpritesTurn.push(new Image());
             this.characterSpritesTurn[i].src = characterSpritesTurnSrc[i];
+        }
+        let enemy1SpritesIdleSrc = new Array();
+        enemy1SpritesIdleSrc.push("img\\Sprites\\slime1.png");
+        enemy1SpritesIdleSrc.push("img\\Sprites\\slime2.png");
+        enemy1SpritesIdleSrc.push("img\\Sprites\\slime3.png");
+        enemy1SpritesIdleSrc.push("img\\Sprites\\slime4.png");
+        enemy1SpritesIdleSrc.push("img\\Sprites\\slime5.png");
+        this.enemy1SpritesIdle = new Array();
+        for (let i = 0; i < enemy1SpritesIdleSrc.length; i++) {
+            this.enemy1SpritesIdle.push(new Image());
+            this.enemy1SpritesIdle[i].src = enemy1SpritesIdleSrc[i];
+        }
+        let enemy2SpritesAttackSrc = new Array();
+        enemy2SpritesAttackSrc.push("img\\Sprites\\brain1.png");
+        enemy2SpritesAttackSrc.push("img\\Sprites\\brain2.png");
+        enemy2SpritesAttackSrc.push("img\\Sprites\\brain3.png");
+        enemy2SpritesAttackSrc.push("img\\Sprites\\brain4.png");
+        this.enemy2SpritesAttack = new Array();
+        for (let i = 0; i < enemy2SpritesAttackSrc.length; i++) {
+            this.enemy2SpritesAttack.push(new Image());
+            this.enemy2SpritesAttack[i].src = enemy2SpritesAttackSrc[i];
         }
     }
     static createFromJson(context, levels) {
