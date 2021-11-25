@@ -15,8 +15,10 @@ let currentFrame = 0;
 let lastDrawnFrame = 0;
 function start() {
     game = new VoidforgedGame(context);
-    let gameData = document.cookie;
-    console.log(gameData);
+    let gameData = getCookie("gameData");
+    var json = JSON.parse(gameData);
+    game.importedGame = json;
+    game.restart();
     togglePause();
     pauseButton.textContent = "Start";
     logicLoop();
@@ -74,6 +76,18 @@ function togglePause() {
         document.getElementById("menuline2").innerHTML = "voidforged message";
     }
 }
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ')
+            c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0)
+            return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
 window.addEventListener('DOMContentLoaded', (event) => {
 });
 window.addEventListener('load', (event) => {
@@ -125,6 +139,10 @@ class GameObject {
                 this.shape.radius = new Vector(this.shape.width, this.shape.height).length();
             }
         }
+    }
+    static createfromJson(level, obj) {
+        let newObject = new Object;
+        return newObject;
     }
     register() {
         this.level.allObjects.add(this);
@@ -310,8 +328,10 @@ class Level {
         this.isPaused = false;
         this.timeScale = 1.0;
     }
-    loadFromJSON(json) {
-        this.name = json.name;
+    static createFromJSON(context, owner, json) {
+        let newLevel = new Level(context, owner);
+        {
+        }
     }
     draw() {
         if (this.backgroundImage != null) {
@@ -439,9 +459,12 @@ class Game {
         this.lastdrawFrame = performance.now();
         this.initializeStats();
     }
-    createFromJson(levels) {
-        console.log(levels.name);
-        console.log(levels.lastModification);
+    static createFromJson(context, levels) {
+        let newGame = new Game(context);
+        var importedLevels = levels.Levels;
+        for (let i = 0; i < importedLevels.length; i++) {
+        }
+        return newGame;
     }
     loadLevel(id) {
         let newlevel = this.levels[id];
@@ -575,7 +598,7 @@ class VoidforgedLevelTransition extends LevelTransitionObject {
         this.faction = 0;
     }
 }
-class VoidforgedEmptyLevel extends Level {
+class VoidforgedLevel extends Level {
     constructor(context, owner) {
         super(context, owner);
         this.usePlayerCamera = false;
@@ -585,9 +608,6 @@ class VoidforgedEmptyLevel extends Level {
         this.backgroundImage = this.game.backgroundImage;
     }
     start() {
-        let player = new VoidforgedPlayer(this, { x: 100, y: 100, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
-        player.register();
-        this.player = player;
         let blocksize = 64;
         for (let i = 0; i < Math.floor(canvas.width / blocksize); i++) {
             this.createFillerBlock(blocksize * i, canvas.height - blocksize * 1);
@@ -598,6 +618,39 @@ class VoidforgedEmptyLevel extends Level {
             }
         }
     }
+    static createFromJSON(context, owner, json) {
+        let blockSize = 64;
+        let newLevel = new VoidforgedLevel(context, owner);
+        newLevel.name = json.Name;
+        let objects = json.Objects;
+        console.log(objects);
+        for (let i = 0; i < objects.length; i++) {
+            let currentObject = objects[i];
+            console.log(currentObject);
+            switch (currentObject.Type) {
+                case 0: {
+                    owner.startingLevel = newLevel.name;
+                    let player = new VoidforgedPlayer(newLevel, { x: currentObject.XPosition * blockSize, y: currentObject.YPosition * blockSize, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
+                    player.register();
+                    newLevel.player = player;
+                    break;
+                }
+                case 3: {
+                    newLevel.createFillerBlock(currentObject.XPosition * blockSize, currentObject.YPosition * blockSize);
+                    break;
+                }
+                case 4: {
+                    newLevel.createWallBlock(currentObject.XPosition * blockSize, currentObject.YPosition * blockSize);
+                    break;
+                }
+                default: {
+                    console.log("Unknown Object Type: " + currentObject.Type);
+                    break;
+                }
+            }
+        }
+        return newLevel;
+    }
     createWallBlock(x, y) {
         let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
         let block = Math.random() * this.game.wallBlockNew.length;
@@ -606,6 +659,12 @@ class VoidforgedEmptyLevel extends Level {
         newBlock.register();
     }
     createFillerBlock(x, y) {
+        let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
+        newBlock.setImage(this.game.caveWallBlock);
+        newBlock.faction = 0;
+        newBlock.register();
+    }
+    createPlayer(x, y) {
         let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
         newBlock.setImage(this.game.caveWallBlock);
         newBlock.faction = 0;
@@ -718,7 +777,7 @@ class VoidforgedEmptyLevel extends Level {
         }
     }
 }
-class VoidforgedLevelLeft extends VoidforgedEmptyLevel {
+class VoidforgedLevelLeft extends VoidforgedLevel {
     start() {
         super.start();
         let blocksize = 64;
@@ -734,7 +793,7 @@ class VoidforgedLevelLeft extends VoidforgedEmptyLevel {
         this.createLevelTransitionBlock(blocksize * 10, canvas.height - 4 * blocksize, 1);
     }
 }
-class VoidforgedLevelRight extends VoidforgedEmptyLevel {
+class VoidforgedLevelRight extends VoidforgedLevel {
     start() {
         super.start();
         let blocksize = 64;
@@ -807,13 +866,24 @@ class VoidforgedGame extends Game {
             this.characterSpritesTurn.push(new Image());
             this.characterSpritesTurn[i].src = characterSpritesTurnSrc[i];
         }
-        this.restart();
+    }
+    static createFromJson(context, levels) {
+        let newGame = new VoidforgedGame(context);
+        newGame.importedGame = levels;
+        var importedLevels = levels.Levels;
+        for (let i = 0; i < importedLevels.length; i++) {
+            let currentLevel = VoidforgedLevel.createFromJSON(context, newGame, importedLevels[i]);
+            newGame.levelMap.set(currentLevel.name, currentLevel);
+        }
+        return newGame;
     }
     restart() {
-        let level = new VoidforgedLevelLeft(this.context, this);
-        this.levels.push(level);
-        this.currentLevel = level;
-        level = new VoidforgedLevelRight(this.context, this);
-        this.levels.push(level);
+        this.levelMap.clear();
+        var importedLevels = this.importedGame.Levels;
+        for (let i = 0; i < importedLevels.length; i++) {
+            let currentLevel = VoidforgedLevel.createFromJSON(context, this, importedLevels[i]);
+            this.levelMap.set(currentLevel.name, currentLevel);
+            this.currentLevel = currentLevel;
+        }
     }
 }

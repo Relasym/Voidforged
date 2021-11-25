@@ -117,6 +117,13 @@ class GameObject implements GameObjectInterface {
         }
     }
 
+    static createfromJson(level:Level,obj: ImportedObject) {
+        let newObject = new Object;
+
+
+        return newObject;
+    }
+
     register(): void {
         this.level.allObjects.add(this)
         if (this.isDrawable) {

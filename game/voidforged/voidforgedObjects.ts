@@ -9,6 +9,8 @@ class VoidforgedObject extends GameObject {
 
 }
 
+
+
 class VoidforgedActor extends Actor{}
 
 class VoidforgedPlayer extends GameObject {
@@ -16,9 +18,9 @@ class VoidforgedPlayer extends GameObject {
     maxSpeed = 2000;
     airFriction = 0.0;
     groundFriction = 5.0;
-    level: VoidforgedEmptyLevel;
+    level: VoidforgedLevel;
 
-    constructor(owner: VoidforgedEmptyLevel, shape: shape, type: collisionType, color: color) {
+    constructor(owner: VoidforgedLevel, shape: shape, type: collisionType, color: color) {
         super(owner, shape, type, color);
         this.image = this.level.game.characterSpritesTurn[2];
         this.affectedByGravity = true;
@@ -78,7 +80,7 @@ class VoidforgedPlayer extends GameObject {
 }
 
 class VoidforgedLevelTransition extends LevelTransitionObject {
-    constructor(owner: VoidforgedEmptyLevel, shape: shape, type: collisionType, color: color) {
+    constructor(owner: VoidforgedLevel, shape: shape, type: collisionType, color: color) {
         super(owner, shape, type, color);
         this.faction = 0;
     }

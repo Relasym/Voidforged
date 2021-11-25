@@ -1,5 +1,5 @@
-class VoidforgedEmptyLevel extends Level {
-    loadLevel: VoidforgedEmptyLevel;
+class VoidforgedLevel extends Level {
+    loadLevel: VoidforgedLevel;
     game: VoidforgedGame;
     constructor(context: CanvasRenderingContext2D, owner: VoidforgedGame) {
         super(context, owner);
@@ -12,9 +12,9 @@ class VoidforgedEmptyLevel extends Level {
 
     start() {
         //player
-        let player = new VoidforgedPlayer(this, { x: 100, y: 100, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
-        player.register();
-        this.player = player;
+        // let player = new VoidforgedPlayer(this, { x: 100, y: 100, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
+        // player.register();
+        // this.player = player;
 
         //walls
         let blocksize = 64;
@@ -30,6 +30,42 @@ class VoidforgedEmptyLevel extends Level {
 
     }
 
+    static createFromJSON(context: CanvasRenderingContext2D, owner: VoidforgedGame, json: ImportedLevel) {
+        let blockSize = 64;
+        let newLevel = new VoidforgedLevel(context, owner);
+        newLevel.name = json.Name;
+        let objects = json.Objects;
+        console.log(objects);
+        for (let i = 0; i < objects.length; i++) {
+            let currentObject = objects[i];
+            console.log(currentObject);
+            switch (currentObject.Type) {
+                case 0: {
+                    //player
+                    owner.startingLevel = newLevel.name;
+                    let player = new VoidforgedPlayer(newLevel, { x: currentObject.XPosition*blockSize, y: currentObject.YPosition*blockSize, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
+                    player.register();
+                    newLevel.player = player;
+                    break;
+                }
+                case 3: {
+                    newLevel.createFillerBlock(currentObject.XPosition * blockSize, currentObject.YPosition * blockSize);
+                    break;
+                }
+                case 4: {
+                    newLevel.createWallBlock(currentObject.XPosition * blockSize, currentObject.YPosition * blockSize);
+                    break;
+                }
+                default: {
+                    console.log("Unknown Object Type: " + currentObject.Type);
+                    break;
+                }
+
+            }
+        }
+        return newLevel;
+    }
+
     createWallBlock(x: number, y: number) {
         let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
         let block = Math.random() * this.game.wallBlockNew.length
@@ -38,6 +74,12 @@ class VoidforgedEmptyLevel extends Level {
         newBlock.register()
     }
     createFillerBlock(x: number, y: number) {
+        let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
+        newBlock.setImage(this.game.caveWallBlock);
+        newBlock.faction = 0;
+        newBlock.register()
+    }
+    createPlayer(x: number, y: number) {
         let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
         newBlock.setImage(this.game.caveWallBlock);
         newBlock.faction = 0;
@@ -185,7 +227,7 @@ class VoidforgedEmptyLevel extends Level {
 
 }
 
-class VoidforgedLevelLeft extends VoidforgedEmptyLevel {
+class VoidforgedLevelLeft extends VoidforgedLevel {
     start() {
         super.start();
 
@@ -207,7 +249,7 @@ class VoidforgedLevelLeft extends VoidforgedEmptyLevel {
 }
 
 
-class VoidforgedLevelRight extends VoidforgedEmptyLevel {
+class VoidforgedLevelRight extends VoidforgedLevel {
     start() {
         super.start();
 

@@ -9,6 +9,7 @@ class VoidforgedGame extends Game {
     characterSpritesWalk: HTMLImageElement[];
     characterSpritesTurn: HTMLImageElement[];
 
+
     constructor(context: CanvasRenderingContext2D) {
         super(context);
         //Background Image
@@ -76,14 +77,36 @@ class VoidforgedGame extends Game {
         // let importedjson:any;
         // this.createLevels(importedjson);
 
-        this.restart();
+        // this.restart();
 
     }
+
+    static createFromJson(context: CanvasRenderingContext2D, levels: importedGame,) {
+        let newGame = new VoidforgedGame(context);
+        newGame.importedGame=levels;
+
+        // console.log(levels.Name);
+        // console.log(levels.LastModification);
+
+        var importedLevels = levels.Levels
+        // console.log(importedLevels);
+        for (let i = 0; i < importedLevels.length; i++) {
+            let currentLevel = VoidforgedLevel.createFromJSON(context,newGame,importedLevels[i]);
+            newGame.levelMap.set(currentLevel.name,currentLevel);
+        }
+        
+        return newGame;
+    }
+
     restart(){
-        let level = new VoidforgedLevelLeft(this.context,this);
-        this.levels.push(level);
-        this.currentLevel=level;
-        level = new VoidforgedLevelRight(this.context,this);
-        this.levels.push(level);
+        this.levelMap.clear();
+        var importedLevels = this.importedGame.Levels
+        // console.log(importedLevels);
+        for (let i = 0; i < importedLevels.length; i++) {
+            let currentLevel = VoidforgedLevel.createFromJSON(context,this,importedLevels[i]);
+            this.levelMap.set(currentLevel.name,currentLevel);
+            this.currentLevel=currentLevel;
+        }
+
     }
 }

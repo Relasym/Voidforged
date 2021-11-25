@@ -10,7 +10,7 @@ type vector = {
     x: number;
     y: number;
 
-    
+
 }
 
 //TODO check which of these are still used
@@ -33,10 +33,15 @@ let lastDrawnFrame = 0; // last drawn frame, incremented by draw loop
 function start(): void {
     //html stat display, static part
 
-    game= new VoidforgedGame(context);
-    let gameData=document.cookie;
-    console.log(gameData);
-    // game.createFromJson(gameData);
+    game = new VoidforgedGame(context);
+
+    let gameData = getCookie("gameData");
+    // console.log(gameData);
+    var json = JSON.parse(gameData);
+    // console.log(json);
+    game.importedGame = json;
+    game.restart();
+    // game=VoidforgedGame.createFromJson(context, json);
 
 
     //unpause and start Game
@@ -142,7 +147,7 @@ function togglePause(): void {
     isPaused = !isPaused;
     pauseButton.textContent = "Continue";
 
-    if (game.currentLevel.player==null) {
+    if (game.currentLevel.player == null) {
         console.info("Restarting");
         game
 
@@ -154,6 +159,17 @@ function togglePause(): void {
 
 }
 
+function getCookie(name: String) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
 
 //DOM loaded
 window.addEventListener('DOMContentLoaded', (event) => {
@@ -162,10 +178,10 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 //fully loaded
 window.addEventListener('load', (event) => {
-    setTimeout(start,500);
+    setTimeout(start, 500);
 });
 
 //pause game if window is unfocused to prevent large simulation ticks
 //TODO this is not sufficient as it doesn't cover other reasons the tab might be paused,
 //e.g. pc going into power saving mode. pretty rare though.
-window.onblur=()=>togglePause();
+window.onblur = () => togglePause();

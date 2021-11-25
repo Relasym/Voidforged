@@ -49,10 +49,10 @@ class Level {
         this.timeScale=1.0;
     }
 
-    loadFromJSON(json:jsonLevel) {
-        this.name=json.name;
+    static createFromJSON(context: CanvasRenderingContext2D,owner: Game, json:ImportedLevel) {
+        let newLevel = new Level(context,owner); {
 
-
+        }
     }
 
 
