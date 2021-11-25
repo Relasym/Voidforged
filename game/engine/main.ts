@@ -1,5 +1,4 @@
 
-
 const canvas = document.querySelector("canvas");
 const context = canvas.getContext("2d");
 const startTime = performance.now();
@@ -35,6 +34,10 @@ function start(): void {
     //html stat display, static part
 
     game= new VoidforgedGame(context);
+    let gameData=document.cookie;
+    console.log(gameData);
+    // game.createFromJson(gameData);
+
 
     //unpause and start Game
     togglePause();
@@ -159,7 +162,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 //fully loaded
 window.addEventListener('load', (event) => {
-    start();
+    setTimeout(start,500);
 });
 
 //pause game if window is unfocused to prevent large simulation ticks

@@ -15,6 +15,8 @@ let currentFrame = 0;
 let lastDrawnFrame = 0;
 function start() {
     game = new VoidforgedGame(context);
+    let gameData = document.cookie;
+    console.log(gameData);
     togglePause();
     pauseButton.textContent = "Start";
     logicLoop();
@@ -75,7 +77,7 @@ function togglePause() {
 window.addEventListener('DOMContentLoaded', (event) => {
 });
 window.addEventListener('load', (event) => {
-    start();
+    setTimeout(start, 500);
 });
 window.onblur = () => togglePause();
 var collisionType;
@@ -437,7 +439,7 @@ class Game {
         this.lastdrawFrame = performance.now();
         this.initializeStats();
     }
-    createLevels(levels) {
+    createFromJson(levels) {
         console.log(levels.name);
         console.log(levels.lastModification);
     }
@@ -489,6 +491,20 @@ class Game {
             context.font = "20px Arial";
             context.fillText(this.statDisplayName[i] + this.statDisplayValue[i], xOffset, yOffset + i * ySize);
         }
+    }
+}
+class Vector {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    length() {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+    normalize() {
+        let length = this.length();
+        this.x /= length;
+        this.y /= length;
     }
 }
 class VoidforgedObject extends GameObject {
@@ -799,19 +815,5 @@ class VoidforgedGame extends Game {
         this.currentLevel = level;
         level = new VoidforgedLevelRight(this.context, this);
         this.levels.push(level);
-    }
-}
-class Vector {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-    length() {
-        return Math.sqrt(this.x * this.x + this.y * this.y);
-    }
-    normalize() {
-        let length = this.length();
-        this.x /= length;
-        this.y /= length;
     }
 }

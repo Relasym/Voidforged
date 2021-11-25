@@ -42,7 +42,7 @@ class Game {
         this.initializeStats();
     }
 
-    createLevels(levels: importedJSON) {
+    createFromJson(levels: importedJSON) {
         console.log(levels.name);
         console.log(levels.lastModification);
     }
