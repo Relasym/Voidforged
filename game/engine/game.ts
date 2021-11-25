@@ -115,8 +115,8 @@ class Game {
 
     }
     initializeStats() {
-        this.statDisplayName.push("Draw FPS: ");
-        this.statDisplayName.push("Logic FPS: ");
+        this.statDisplayName.push("draws/second: ");
+        this.statDisplayName.push("updates/second: ");
     }
 
     drawStats() {

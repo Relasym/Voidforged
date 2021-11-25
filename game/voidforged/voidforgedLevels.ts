@@ -46,6 +46,7 @@ class VoidforgedLevel extends Level {
                     let player = new VoidforgedPlayer(newLevel, { x: currentObject.XPosition*blockSize, y: currentObject.YPosition*blockSize, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
                     player.register();
                     newLevel.player = player;
+                    newLevel.game.currentLevel=newLevel;
                     break;
                 }
                 case 3: {
@@ -90,7 +91,7 @@ class VoidforgedLevel extends Level {
     createPlayer(x: number, y: number) {
         let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
         newBlock.faction = 0;
-        newBlock.register()
+        newBlock.register();
     }
     createEnemy1(x:number,y:number) {
         let newenemy = new VoidforgedEnemy1(this, { x: x, y: y, width: 32, height: 32 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
@@ -248,13 +249,11 @@ class VoidforgedLevel extends Level {
 class VoidforgedLevelLeft extends VoidforgedLevel {
     start() {
         super.start();
-
         let blocksize = 64;
         //some blocks to jump around on
         for (let i = 1; i < Math.floor(canvas.width / blocksize) - 1; i++) {
             this.createWallBlock(blocksize * i, canvas.height - 2 * blocksize);
         }
-
         this.createWallBlock(blocksize * 1, canvas.height - 5 * blocksize);
         this.createWallBlock(blocksize * 1, canvas.height - 4 * blocksize);
         this.createWallBlock(blocksize * 1, canvas.height - 3 * blocksize);
@@ -262,7 +261,6 @@ class VoidforgedLevelLeft extends VoidforgedLevel {
         this.createWallBlock(blocksize * 2, canvas.height - 3 * blocksize);
         this.createWallBlock(blocksize * 3, canvas.height - 3 * blocksize);
         this.createLevelTransitionBlock(blocksize * 10, canvas.height - 4 * blocksize, 1);
-
     }
 }
 

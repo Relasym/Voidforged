@@ -501,8 +501,8 @@ class Game {
         this.targetLevel = this.startingLevel;
     }
     initializeStats() {
-        this.statDisplayName.push("Draw FPS: ");
-        this.statDisplayName.push("Logic FPS: ");
+        this.statDisplayName.push("draws/second: ");
+        this.statDisplayName.push("updates/second: ");
     }
     drawStats() {
         let xOffset = 50;
@@ -637,7 +637,7 @@ class VoidforgedEnemy2 extends VoidforgedActor {
         this.image = this.level.game.enemy2SpritesAttack[0];
         this.affectedByGravity = false;
         this.faction = 2;
-        this.imageDirection = imageDirection.Right;
+        this.imageDirection = imageDirection.Left;
         for (let i = 0; i < this.level.game.enemy2SpritesAttack.length; i++) {
             this.walkFrames.push({
                 image: this.level.game.enemy2SpritesAttack[i],
@@ -720,6 +720,7 @@ class VoidforgedLevel extends Level {
                     let player = new VoidforgedPlayer(newLevel, { x: currentObject.XPosition * blockSize, y: currentObject.YPosition * blockSize, width: 64, height: 64 }, collisionType.Rectangle, { r: 100, g: 100, b: 100, a: 1 });
                     player.register();
                     newLevel.player = player;
+                    newLevel.game.currentLevel = newLevel;
                     break;
                 }
                 case 3: {
@@ -1007,7 +1008,6 @@ class VoidforgedGame extends Game {
         for (let i = 0; i < importedLevels.length; i++) {
             let currentLevel = VoidforgedLevel.createFromJSON(context, this, importedLevels[i]);
             this.levelMap.set(currentLevel.name, currentLevel);
-            this.currentLevel = currentLevel;
         }
     }
 }

@@ -127,7 +127,7 @@ class VoidforgedEnemy2 extends VoidforgedActor {
         this.image = this.level.game.enemy2SpritesAttack[0];
         this.affectedByGravity = false;
         this.faction = 2;
-        this.imageDirection = imageDirection.Right;
+        this.imageDirection = imageDirection.Left;
         for (let i = 0; i < this.level.game.enemy2SpritesAttack.length; i++) {
             this.walkFrames.push({
                 image: this.level.game.enemy2SpritesAttack[i],

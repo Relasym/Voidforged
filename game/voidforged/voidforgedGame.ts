@@ -132,13 +132,11 @@ class VoidforgedGame extends Game {
 
     restart(){
         this.levelMap.clear();
-        var importedLevels = this.importedGame.Levels
+        var importedLevels = this.importedGame.Levels;
         // console.log(importedLevels);
         for (let i = 0; i < importedLevels.length; i++) {
             let currentLevel = VoidforgedLevel.createFromJSON(context,this,importedLevels[i]);
             this.levelMap.set(currentLevel.name,currentLevel);
-            this.currentLevel=currentLevel;
         }
-
     }
 }
