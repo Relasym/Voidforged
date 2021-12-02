@@ -90,7 +90,7 @@ class VoidforgedLevel extends Level {
     }
     createPlayer(x: number, y: number) {
         let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
-        newBlock.faction = 0;
+        newBlock.faction = 1;
         newBlock.register();
     }
     createEnemy1(x:number,y:number) {
@@ -115,7 +115,6 @@ class VoidforgedLevel extends Level {
 
     handleCollisions(objectsByFaction: any, projectilesByFaction: any): void {
         /*
-        TODO
         first projectiles collide:
             a, with non-faction projectiles
             b, with non-faction actors
@@ -244,49 +243,4 @@ class VoidforgedLevel extends Level {
     }
 
 
-}
-
-class VoidforgedLevelLeft extends VoidforgedLevel {
-    start() {
-        super.start();
-        let blocksize = 64;
-        //some blocks to jump around on
-        for (let i = 1; i < Math.floor(canvas.width / blocksize) - 1; i++) {
-            this.createWallBlock(blocksize * i, canvas.height - 2 * blocksize);
-        }
-        this.createWallBlock(blocksize * 1, canvas.height - 5 * blocksize);
-        this.createWallBlock(blocksize * 1, canvas.height - 4 * blocksize);
-        this.createWallBlock(blocksize * 1, canvas.height - 3 * blocksize);
-        this.createWallBlock(blocksize * 2, canvas.height - 4 * blocksize);
-        this.createWallBlock(blocksize * 2, canvas.height - 3 * blocksize);
-        this.createWallBlock(blocksize * 3, canvas.height - 3 * blocksize);
-        this.createLevelTransitionBlock(blocksize * 10, canvas.height - 4 * blocksize, 1);
-    }
-}
-
-
-class VoidforgedLevelRight extends VoidforgedLevel {
-    start() {
-        super.start();
-
-        let blocksize = 64;
-        //some blocks to jump around on
-        for (let i = 1; i < Math.floor(canvas.width / blocksize) - 1; i++) {
-            this.createWallBlock(blocksize * i, canvas.height - 2 * blocksize);
-        }
-
-        this.createWallBlock(blocksize * 10, canvas.height - 5 * blocksize);
-        this.createWallBlock(blocksize * 10, canvas.height - 4 * blocksize);
-        this.createWallBlock(blocksize * 10, canvas.height - 3 * blocksize);
-        this.createWallBlock(blocksize * 10, canvas.height - 6 * blocksize);
-        this.createWallBlock(blocksize * 9, canvas.height - 4 * blocksize);
-        this.createWallBlock(blocksize * 9, canvas.height - 3 * blocksize);
-        this.createWallBlock(blocksize * 9, canvas.height - 5 * blocksize);
-        this.createWallBlock(blocksize * 8, canvas.height - 3 * blocksize);
-        this.createWallBlock(blocksize * 8, canvas.height - 4 * blocksize);
-        this.createWallBlock(blocksize * 7, canvas.height - 3 * blocksize);
-        this.createLevelTransitionBlock(blocksize * 1, canvas.height - 4 * blocksize, 0);
-
-
-    }
 }

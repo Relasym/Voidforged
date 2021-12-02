@@ -13,7 +13,7 @@ class Level {
     timeScale: number;
     name: string;
     context: CanvasRenderingContext2D;
-    player?: PlayerInterface;
+    player?: GameObject;
     camera?: Vector
     backgroundColor?: color;
     backgroundImage?: HTMLImageElement; //TODO implement usage of *static* background
@@ -30,7 +30,7 @@ class Level {
     totalRuntime: number;
 
     factionAmount = 10; //realistically no more than 4-5 (0: terrain, 1: player, rest: other)
-    objectsByFaction: Set<GameObjectInterface>[] = [];
+    objectsByFaction: Set<GameObject>[] = [];
     projectilesByFaction: Set<object>[] = [];
 
     gravity: number;
@@ -65,7 +65,7 @@ class Level {
         } else {
             console.warn("Neither Background nor backgroundcolor set");
         }
-        this.drawableObjects.forEach((object: GameObjectInterface) => {
+        this.drawableObjects.forEach((object: GameObject) => {
             object.draw();
         });
         if (this.player != null) {
@@ -78,11 +78,11 @@ class Level {
             let effectiveTimeScale=timeScale*this.timeScale;
             this.totalRuntime += currentFrameDuration;
     
-            this.updateableObjects.forEach((object: GameObjectInterface) => {
+            this.updateableObjects.forEach((object: GameObject) => {
                 object.updateBeforeCollision(currentFrameDuration,effectiveTimeScale);
             });
             this.handleCollisions(this.objectsByFaction, this.projectilesByFaction);
-            this.updateableObjects.forEach((object: GameObjectInterface) => {
+            this.updateableObjects.forEach((object: GameObject) => {
                 object.updateAfterCollision(currentFrameDuration,effectiveTimeScale);
             });
     

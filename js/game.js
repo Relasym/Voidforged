@@ -14,9 +14,9 @@ let totalRuntime = 0;
 let currentFrame = 0;
 let lastDrawnFrame = 0;
 function start() {
-    game = new VoidforgedGame(context);
     let gameData = getCookie("gameData");
     var json = JSON.parse(gameData);
+    game = new VoidforgedGame(context);
     game.importedGame = json;
     game.restart();
     togglePause();
@@ -537,6 +537,52 @@ class Vector {
         return result;
     }
 }
+class ImageLoader {
+    constructor() {
+        this.totalImages = 0;
+        this.loadedImages = 0;
+        this.canStart = false;
+    }
+    loadImage(img, url) {
+        if (this.canStart) {
+            console.warn("Image added to Imageloader after start");
+        }
+        else {
+            this.totalImages++;
+            img.src = url;
+            img.onload = this.onload;
+        }
+    }
+    loadImages(images, urls) {
+        if (this.canStart) {
+            console.warn("ImageLoader: trying to load image after start");
+        }
+        else if (images == null || images.length == 0) {
+            this.totalImages += urls.length;
+            for (let i = 0; i < urls.length; i++) {
+                images.push(new Image());
+                images[i].src = urls[i];
+                images[i].onload = this.onload;
+            }
+        }
+        else {
+            console.error("ImageLoader: Image array was not passed empty");
+        }
+    }
+    onload() {
+        this.loadedImages++;
+        if (this.canStart && this.loadedImages == this.totalImages) {
+            this.onLoadFinished();
+        }
+    }
+    launch(callback) {
+        this.canStart = true;
+        this.onLoadFinished = callback;
+        if (this.loadedImages == this.totalImages) {
+            callback();
+        }
+    }
+}
 class VoidforgedObject extends GameObject {
     constructor(owner, shape, type, color) {
         super(owner, shape, type, color);
@@ -762,7 +808,7 @@ class VoidforgedLevel extends Level {
     }
     createPlayer(x, y) {
         let newBlock = new VoidforgedObject(this, { x: x, y: y, width: 64, height: 64 }, collisionType.Rectangle, { r: 255, g: 0, b: 0, a: 1 });
-        newBlock.faction = 0;
+        newBlock.faction = 1;
         newBlock.register();
     }
     createEnemy1(x, y) {
@@ -879,117 +925,70 @@ class VoidforgedLevel extends Level {
         }
     }
 }
-class VoidforgedLevelLeft extends VoidforgedLevel {
-    start() {
-        super.start();
-        let blocksize = 64;
-        for (let i = 1; i < Math.floor(canvas.width / blocksize) - 1; i++) {
-            this.createWallBlock(blocksize * i, canvas.height - 2 * blocksize);
-        }
-        this.createWallBlock(blocksize * 1, canvas.height - 5 * blocksize);
-        this.createWallBlock(blocksize * 1, canvas.height - 4 * blocksize);
-        this.createWallBlock(blocksize * 1, canvas.height - 3 * blocksize);
-        this.createWallBlock(blocksize * 2, canvas.height - 4 * blocksize);
-        this.createWallBlock(blocksize * 2, canvas.height - 3 * blocksize);
-        this.createWallBlock(blocksize * 3, canvas.height - 3 * blocksize);
-        this.createLevelTransitionBlock(blocksize * 10, canvas.height - 4 * blocksize, 1);
-    }
-}
-class VoidforgedLevelRight extends VoidforgedLevel {
-    start() {
-        super.start();
-        let blocksize = 64;
-        for (let i = 1; i < Math.floor(canvas.width / blocksize) - 1; i++) {
-            this.createWallBlock(blocksize * i, canvas.height - 2 * blocksize);
-        }
-        this.createWallBlock(blocksize * 10, canvas.height - 5 * blocksize);
-        this.createWallBlock(blocksize * 10, canvas.height - 4 * blocksize);
-        this.createWallBlock(blocksize * 10, canvas.height - 3 * blocksize);
-        this.createWallBlock(blocksize * 10, canvas.height - 6 * blocksize);
-        this.createWallBlock(blocksize * 9, canvas.height - 4 * blocksize);
-        this.createWallBlock(blocksize * 9, canvas.height - 3 * blocksize);
-        this.createWallBlock(blocksize * 9, canvas.height - 5 * blocksize);
-        this.createWallBlock(blocksize * 8, canvas.height - 3 * blocksize);
-        this.createWallBlock(blocksize * 8, canvas.height - 4 * blocksize);
-        this.createWallBlock(blocksize * 7, canvas.height - 3 * blocksize);
-        this.createLevelTransitionBlock(blocksize * 1, canvas.height - 4 * blocksize, 0);
-    }
-}
 class VoidforgedGame extends Game {
     constructor(context) {
         super(context);
-        this.backgroundImage.src = "img\\Backgrounds\\Background cave2.png";
+        this.wallBlock = [];
+        this.wallBlockNew = [];
+        this.caveWallBlock = new Image();
+        this.groundFlat = new Image();
+        this.groundSlanted = new Image();
+        this.platformMid = new Image();
+        this.platformEnd = new Image();
+        this.characterSpritesWalk = [];
+        this.characterSpritesTurn = [];
+        this.enemy1SpritesIdle = [];
+        this.enemy2SpritesAttack = [];
         this.bullet = new Image();
-        this.bullet.src = "img\\Sprites\\bullet.png";
+        let loader = new ImageLoader();
+        loader.loadImage(this.backgroundImage, "img\\Backgrounds\\Background cave2.png");
+        loader.loadImage(this.bullet, "img\\Sprites\\bullet.png");
         let wallBlockSrc = new Array();
         wallBlockSrc.push("img\\Tiles\\Cave filler block1.png");
         wallBlockSrc.push("img\\Tiles\\Cave filler block2.png");
         wallBlockSrc.push("img\\Tiles\\Cave filler block3.png");
         wallBlockSrc.push("img\\Tiles\\Cave filler block4.png");
-        this.wallBlock = new Array();
-        for (let i = 0; i < wallBlockSrc.length; i++) {
-            this.wallBlock.push(new Image());
-            this.wallBlock[i].src = wallBlockSrc[i];
-        }
+        loader.loadImages(this.wallBlock, wallBlockSrc);
         const wallBlockNewSrc = new Array();
         wallBlockNewSrc.push("img\\Tiles\\Cave filler block1 new.png");
         wallBlockNewSrc.push("img\\Tiles\\Cave filler block2 new.png");
         wallBlockNewSrc.push("img\\Tiles\\Cave filler block3 new.png");
         wallBlockNewSrc.push("img\\Tiles\\Cave filler block4 new.png");
-        this.wallBlockNew = new Array();
-        for (let i = 0; i < wallBlockNewSrc.length; i++) {
-            this.wallBlockNew.push(new Image());
-            this.wallBlockNew[i].src = wallBlockNewSrc[i];
-        }
-        this.caveWallBlock = new Image();
-        this.caveWallBlock.src = "img\\Tiles\\cave wall.png";
-        this.groundFlat = new Image();
-        this.groundFlat.src = "img\\Tiles\\ground tile flat.png";
-        this.groundSlanted = new Image();
-        this.groundSlanted.src = "img\\Tiles\\ground tile slanted.png";
-        this.platformMid = new Image();
-        this.platformMid.src = "img\\Tiles\\jumping platform mid.png";
-        this.platformEnd = new Image();
-        this.platformEnd.src = "img\\Tiles\\jumping platform end.png";
+        loader.loadImages(this.wallBlockNew, wallBlockNewSrc);
+        loader.loadImage(this.caveWallBlock, "img\\Tiles\\cave wall.png");
+        loader.loadImage(this.groundFlat, "img\\Tiles\\ground tile flat.png");
+        loader.loadImage(this.groundSlanted, "img\\Tiles\\ground tile slanted.png");
+        loader.loadImage(this.platformMid, "img\\Tiles\\jumping platform mid.png");
+        loader.loadImage(this.platformEnd, "img\\Tiles\\jumping platform end.png");
         let characterSpritesWalkSrc = new Array();
         characterSpritesWalkSrc.push("img\\Sprites\\1Character cheap2 side new.png");
         characterSpritesWalkSrc.push("img\\Sprites\\Character cheap2_2 side new.png");
         characterSpritesWalkSrc.push("img\\Sprites\\2Character cheap2_3 side new.png");
-        this.characterSpritesWalk = new Array();
-        for (let i = 0; i < characterSpritesWalkSrc.length; i++) {
-            this.characterSpritesWalk.push(new Image());
-            this.characterSpritesWalk[i].src = characterSpritesWalkSrc[i];
-        }
-        this.characterSpritesWalk.reverse();
+        loader.loadImages(this.characterSpritesWalk, characterSpritesWalkSrc);
         let characterSpritesTurnSrc = new Array();
         characterSpritesTurnSrc.push("img\\Sprites\\1Character cheap2 side new.png");
         characterSpritesTurnSrc.push("img\\Sprites\\Character cheap2 turn new.png");
         characterSpritesTurnSrc.push("img\\Sprites\\Character cheapnew.png");
-        this.characterSpritesTurn = new Array();
-        for (let i = 0; i < characterSpritesTurnSrc.length; i++) {
-            this.characterSpritesTurn.push(new Image());
-            this.characterSpritesTurn[i].src = characterSpritesTurnSrc[i];
-        }
+        loader.loadImages(this.characterSpritesTurn, characterSpritesTurnSrc);
         let enemy1SpritesIdleSrc = new Array();
         enemy1SpritesIdleSrc.push("img\\Sprites\\slime1.png");
         enemy1SpritesIdleSrc.push("img\\Sprites\\slime2.png");
         enemy1SpritesIdleSrc.push("img\\Sprites\\slime3.png");
         enemy1SpritesIdleSrc.push("img\\Sprites\\slime4.png");
         enemy1SpritesIdleSrc.push("img\\Sprites\\slime5.png");
-        this.enemy1SpritesIdle = new Array();
-        for (let i = 0; i < enemy1SpritesIdleSrc.length; i++) {
-            this.enemy1SpritesIdle.push(new Image());
-            this.enemy1SpritesIdle[i].src = enemy1SpritesIdleSrc[i];
-        }
+        loader.loadImages(this.enemy1SpritesIdle, enemy1SpritesIdleSrc);
         let enemy2SpritesAttackSrc = new Array();
         enemy2SpritesAttackSrc.push("img\\Sprites\\brain1.png");
         enemy2SpritesAttackSrc.push("img\\Sprites\\brain2.png");
         enemy2SpritesAttackSrc.push("img\\Sprites\\brain3.png");
         enemy2SpritesAttackSrc.push("img\\Sprites\\brain4.png");
-        this.enemy2SpritesAttack = new Array();
-        for (let i = 0; i < enemy2SpritesAttackSrc.length; i++) {
-            this.enemy2SpritesAttack.push(new Image());
-            this.enemy2SpritesAttack[i].src = enemy2SpritesAttackSrc[i];
+        loader.loadImages(this.enemy2SpritesAttack, enemy2SpritesAttackSrc);
+        let images = [];
+        loader.launch(this.restart);
+        for (let image of images) {
+            if (!image.complete) {
+                console.warn("Image not loaded: " + image.src);
+            }
         }
     }
     static createFromJson(context, levels) {

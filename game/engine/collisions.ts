@@ -3,7 +3,7 @@
 //TODO these should check for collisions between shapes, not objects
 
 //calls appropriate collision function for given object types/shapes
-function areObjectsColliding(object1: GameObjectInterface, object2: GameObjectInterface): boolean {
+function areObjectsColliding(object1: GameObject, object2: GameObject): boolean {
 
     //no collision if objects are too far apart
     if(!collisionCircleCircle(object1,object2)) {
@@ -25,13 +25,13 @@ function areObjectsColliding(object1: GameObjectInterface, object2: GameObjectIn
     }
 }
 
-function collisionRectangleRectangle(rectangle1: GameObjectInterface, rectangle2: GameObjectInterface): boolean {
+function collisionRectangleRectangle(rectangle1: GameObject, rectangle2: GameObject): boolean {
     return (rectangle1.shape.x < rectangle2.shape.x + rectangle2.shape.width &&
         rectangle1.shape.x + rectangle1.shape.width > rectangle2.shape.x &&
         rectangle1.shape.y < rectangle2.shape.y + rectangle2.shape.height &&
         rectangle1.shape.y + rectangle1.shape.height > rectangle2.shape.y)
 }
-function collisionRectangleCircle(rectangle: GameObjectInterface, circle: GameObjectInterface): boolean {
+function collisionRectangleCircle(rectangle: GameObject, circle: GameObject): boolean {
     if (rectangle.type == collisionType.Circle) {
         let swap = rectangle;
         rectangle = circle;
@@ -48,6 +48,6 @@ function collisionRectangleCircle(rectangle: GameObjectInterface, circle: GameOb
 }
 
 //TODO this doesn't work for rectangles of different sizes since it assumes the coordinates are the center
-function collisionCircleCircle(circle1: GameObjectInterface, circle2: GameObjectInterface): boolean {
+function collisionCircleCircle(circle1: GameObject, circle2: GameObject): boolean {
     return (new Vector(circle1.shape.x - circle2.shape.x,circle1.shape.y - circle2.shape.y).length() <= (circle1.shape.radius + circle2.shape.radius))
 }

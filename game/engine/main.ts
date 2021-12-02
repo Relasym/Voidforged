@@ -31,14 +31,13 @@ let currentFrame = 0;  // last calculated frame, incremented by game logic
 let lastDrawnFrame = 0; // last drawn frame, incremented by draw loop
 
 function start(): void {
-    //html stat display, static part
-
-    game = new VoidforgedGame(context);
-
     let gameData = getCookie("gameData");
     // console.log(gameData);
     var json = JSON.parse(gameData);
     // console.log(json);
+
+    game = new VoidforgedGame(context);
+
     game.importedGame = json;
     game.restart();
     // game=VoidforgedGame.createFromJson(context, json);

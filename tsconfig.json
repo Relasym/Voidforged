@@ -8,13 +8,14 @@
     },
     "files": [
         "game/engine/main.ts",
-        "game/engine/gameObjects.ts",
-        "game/engine/level.ts",
+        "game/engine/GameObject.ts",
+        "game/engine/Level.ts",
         "game/engine/collisions.ts",
-        "game/engine/game.ts",
-        "game/engine/helper/helper.ts",
-        "game/voidforged/voidforgedObjects.ts",
-        "game/voidforged/voidforgedLevels.ts",
-        "game/voidforged/voidforgedGame.ts"
+        "game/engine/Game.ts",
+        "game/engine/helper/Vector.ts",
+        "game/engine/helper/ImageLoader.ts",
+        "game/voidforged/VoidforgedObject.ts",
+        "game/voidforged/VoidforgedLevel.ts",
+        "game/voidforged/VoidforgedGame.ts"
     ]
 }

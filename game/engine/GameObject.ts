@@ -30,19 +30,8 @@ enum imageDirection {
     Right
 }
 
-
-interface GameObjectInterface {
-    shape: shape;
-    velocity: Vector;
-    isDestroying: boolean;
-    type: collisionType;
-    draw(): void;
-    updateBeforeCollision(currentFrameDuration: number, timeScale: number): void;
-    updateAfterCollision(currentFrameDuration: number, timeScale: number): void;
-}
-
 //basic object, includes register/deregister and destruction
-class GameObject implements GameObjectInterface {
+class GameObject {
 
     //Level controlling Object
     level: Level;
@@ -183,7 +172,7 @@ class GameObject implements GameObjectInterface {
         }
     }
 
-    distanceTo(object: GameObjectInterface): number {
+    distanceTo(object: GameObject): number {
         return new Vector(this.shape.x - object.shape.x,this.shape.y - object.shape.y).length();
     }
 
@@ -339,10 +328,4 @@ class Projectile extends GameObject {
         this.level.projectileObjects.delete(this);
         this.level.projectilesByFaction[this.faction].delete(this);
     }
-}
-
-
-//???
-interface PlayerInterface extends GameObjectInterface {
-
 }
